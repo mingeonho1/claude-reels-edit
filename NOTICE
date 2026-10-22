@@ -1,0 +1,16 @@
+claude-reels-edit — third-party components
+
+Not redistributed in this repository; downloaded by skills/reels-talk-edit/scripts/fetch_assets.sh:
+- Do Hyeon font — Woowahan Brothers, SIL Open Font License 1.1 (github.com/google/fonts, ofl/dohyeon)
+- Pretendard font — Kil Hyung-jin (orioncactus), SIL Open Font License 1.1 (github.com/orioncactus/pretendard)
+- YuNet face detector (face_detection_yunet_2023mar.onnx) — OpenCV Zoo, MIT (github.com/opencv/opencv_zoo)
+- Speech models via sherpa-onnx releases (github.com/k2-fsa/sherpa-onnx): Whisper large-v3-turbo (OpenAI, MIT),
+  Korean Zipformer, Silero VAD (MIT), 3D-Speaker ERES2Net (Apache-2.0). Each model keeps its own license.
+
+Runtime dependencies: FFmpeg (LGPL/GPL, with libx265 GPL), OpenCV, NumPy, SciPy, Pillow, sherpa-onnx, soundfile.
+
+Included and owned by the author (mingeonho1):
+- skills/reels-talk-edit/assets/his_look.cube — colour LUT fitted on the author's own footage
+- skills/reels-talk-edit/ref/gt9.json, examples/ep10/* — transcripts and edit data of the author's own episodes
+- docs/img/ep10_frames.jpg — frames of the author's own video and guest character
+The guest character GIF is not included.

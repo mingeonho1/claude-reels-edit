@@ -1,0 +1,6 @@
+numpy
+opencv-python>=4.5.4
+pillow
+scipy
+sherpa-onnx
+soundfile

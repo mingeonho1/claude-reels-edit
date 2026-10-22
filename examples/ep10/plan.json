@@ -1,0 +1,746 @@
+{
+ "start_word": 21.0,
+ "end_word": 260.2,
+ "speed": {
+  "host": 1.2,
+  "guest": 1.3,
+  "mixed": 1.25
+ },
+ "pause_cut": 0.32,
+ "pad_in": 0.09,
+ "pad_out": 0.12,
+ "hook": {
+  "text": "AI 전문가인 척하기",
+  "until_t": 24.79,
+  "min_dur": 2.4,
+  "max_dur": 3.4
+ },
+ "drop": [
+  {
+   "t": [
+    25.15,
+    26.55
+   ],
+   "why": "filler 아 / 그거"
+  },
+  {
+   "t": [
+    33.65,
+    39.7
+   ],
+   "why": "아 그래? 응 + side question (covered later)"
+  },
+  {
+   "t": [
+    41.55,
+    44.03
+   ],
+   "why": "aside 코드 개발자는 조금 다르긴 하는데"
+  },
+  {
+   "t": [
+    49.55,
+    51.95
+   ],
+   "why": "guest repeats the question"
+  },
+  {
+   "t": [
+    66.8,
+    72.16
+   ],
+   "why": "detail list (월급/적금/대출) - keep the point"
+  },
+  {
+   "t": [
+    82.5,
+    89.45
+   ],
+   "why": "quote tail \"라고 나한테 말씀 주신 거야\" + restatement of the change"
+  },
+  {
+   "t": [
+    92.25,
+    96.48
+   ],
+   "why": "\"라고 하는데 그게 조금 난감하지\" - 난감 already said; go straight to the host question + host \"근데\" and its 0.4 s pause (user: 날짜 컷 어색)"
+  },
+  {
+   "t": [
+    104.5,
+    108.95
+   ],
+   "why": "repeated later by the recalculation list"
+  },
+  {
+   "t": [
+    110.96,
+    113.2
+   ],
+   "why": "trailing \"이게\" + pause (was an uncaptioned gap) (start moved to the energy minimum 110.96)"
+  },
+  {
+   "t": [
+    125.9,
+    128.05
+   ],
+   "why": "이자 빼고도 / 그러면은 false start"
+  },
+  {
+   "t": [
+    138.3,
+    152.5
+   ],
+   "why": "joke + side branch (budget alternatives)"
+  },
+  {
+   "t": [
+    172.1,
+    232.2
+   ],
+   "why": "second branch (table/evidence/AI benefit) - keep the payoff line"
+  },
+  {
+   "t": [
+    244.3,
+    246.75
+   ],
+   "why": "filler 어 뭐"
+  },
+  {
+   "t": [
+    249.74,
+    250.06
+   ],
+   "why": "filler 뭐 (setup line 비싼 거 쓰면 뭐가 다른데? kept)"
+  }
+ ],
+ "captions": [
+  {
+   "t": [
+    21.0,
+    24.9
+   ],
+   "speaker": "host",
+   "text": "GPT-6 아스트라 써봤어?",
+   "en": "Have you tried GPT-6 Astra?"
+  },
+  {
+   "t": [
+    26.5,
+    27.6
+   ],
+   "speaker": "guest",
+   "text": "얘기는 들었는데",
+   "en": "I've heard about it"
+  },
+  {
+   "t": [
+    27.6,
+    30.1
+   ],
+   "speaker": "guest",
+   "text": "어려운 수학 가설을 풀었다",
+   "en": "It solved a tough math conjecture"
+  },
+  {
+   "t": [
+    30.1,
+    31.4
+   ],
+   "speaker": "guest",
+   "text": "이런 얘기만 들어보고",
+   "en": "That's all I've heard"
+  },
+  {
+   "t": [
+    32.3,
+    33.6
+   ],
+   "speaker": "guest",
+   "text": "딱히 써보진 않았어",
+   "en": "Haven't really tried it"
+  },
+  {
+   "t": [
+    39.7,
+    41.0
+   ],
+   "speaker": "host",
+   "text": "나도 궁금해서",
+   "en": "I'm curious too"
+  },
+  {
+   "t": [
+    44.0,
+    46.08
+   ],
+   "speaker": "host",
+   "text": "네 업무에 대입해 보려고",
+   "en": "so I want to apply it to your work"
+  },
+  {
+   "t": [
+    46.09,
+    47.4
+   ],
+   "speaker": "host",
+   "text": "너 일하면서",
+   "en": "At your job,"
+  },
+  {
+   "t": [
+    47.42,
+    48.8
+   ],
+   "speaker": "host",
+   "text": "제일 손 많이 가는 게 뭐야?",
+   "en": "what takes the most effort?"
+  },
+  {
+   "t": [
+    51.9,
+    55.2
+   ],
+   "speaker": "guest",
+   "text": "난 포트폴리오 다 짜놨는데",
+   "en": "Say I've built a full portfolio plan"
+  },
+  {
+   "t": [
+    55.3,
+    58.25
+   ],
+   "speaker": "guest",
+   "text": "고객이 조건 바꿀 때 있잖아",
+   "en": "and the client changes the conditions"
+  },
+  {
+   "t": [
+    58.28,
+    60.1
+   ],
+   "speaker": "guest",
+   "text": "그게 제일 난감하더라",
+   "en": "That's the toughest part"
+  },
+  {
+   "t": [
+    60.12,
+    61.0
+   ],
+   "speaker": "guest",
+   "text": "예를 들어서",
+   "en": "For example,"
+  },
+  {
+   "t": [
+    61.5,
+    63.5
+   ],
+   "speaker": "guest",
+   "text": "저는 3년 뒤에 결혼하고",
+   "en": "\"I want to marry in 3 years"
+  },
+  {
+   "t": [
+    63.5,
+    65.7
+   ],
+   "speaker": "guest",
+   "text": "서울에 집 구하고 싶어요",
+   "en": "and get a place in Seoul\""
+  },
+  {
+   "t": [
+    72.1,
+    74.9
+   ],
+   "speaker": "guest",
+   "text": "매달 얼마씩 모아야 돼요 했거든",
+   "en": "I told them how much to save monthly"
+  },
+  {
+   "t": [
+    75.4,
+    77.7
+   ],
+   "speaker": "guest",
+   "text": "다 해놨더니 갑자기",
+   "en": "Once it's all set, suddenly"
+  },
+  {
+   "t": [
+    78.0,
+    79.6
+   ],
+   "speaker": "guest",
+   "text": "저 계획이 좀 바뀌었어요",
+   "en": "\"My plans changed a bit"
+  },
+  {
+   "t": [
+    80.2,
+    82.45
+   ],
+   "speaker": "guest",
+   "text": "결혼을 내년에 해야겠다고",
+   "en": "We'll marry next year\""
+  },
+  {
+   "t": [
+    89.6,
+    92.25
+   ],
+   "speaker": "guest",
+   "text": "생각했던 집 들어갈 수 있을까요?",
+   "en": "\"Can I still get the place I wanted?\""
+  },
+  {
+   "t": [
+    95.86,
+    98.7
+   ],
+   "speaker": "host",
+   "text": "날짜 하나 바뀐 게 그렇게 커?",
+   "en": "One date changed. Is it that big?"
+  },
+  {
+   "t": [
+    99.0,
+    99.7
+   ],
+   "speaker": "guest",
+   "text": "엄청 크지",
+   "en": "Huge."
+  },
+  {
+   "t": [
+    100.0,
+    102.2
+   ],
+   "speaker": "guest",
+   "text": "기간이 줄면 모을 돈도 줄고",
+   "en": "Less time, less savings"
+  },
+  {
+   "t": [
+    102.2,
+    104.2
+   ],
+   "speaker": "guest",
+   "text": "그만큼 대출이 더 필요해져",
+   "en": "and you need a bigger loan"
+  },
+  {
+   "t": [
+    108.95,
+    110.86
+   ],
+   "speaker": "guest",
+   "text": "숫자 하나 고치고 끝이 아니야",
+   "en": "It's not just fixing one number"
+  },
+  {
+   "t": [
+    113.2,
+    115.0
+   ],
+   "speaker": "host",
+   "text": "얼마나 차이 나는데?",
+   "en": "How big is the difference?"
+  },
+  {
+   "t": [
+    116.0,
+    118.5
+   ],
+   "speaker": "guest",
+   "text": "매달 100만 원 저축하면",
+   "en": "If you save 1M won a month,"
+  },
+  {
+   "t": [
+    118.5,
+    120.35
+   ],
+   "speaker": "guest",
+   "text": "3년이 1년으로 줄어든 거잖아",
+   "en": "3 years became 1 year"
+  },
+  {
+   "t": [
+    120.4,
+    121.5
+   ],
+   "speaker": "guest",
+   "text": "그럼 24개월치",
+   "en": "so 24 months' worth"
+  },
+  {
+   "t": [
+    122.7,
+    125.9
+   ],
+   "speaker": "guest",
+   "text": "2400만 원이 빠지는 거지",
+   "en": "you're 24M won short"
+  },
+  {
+   "t": [
+    128.0,
+    130.2
+   ],
+   "speaker": "host",
+   "text": "그럼 2400만 원을",
+   "en": "So that 24M won,"
+  },
+  {
+   "t": [
+    130.4,
+    132.2
+   ],
+   "speaker": "host",
+   "text": "대출로 더 받으면 되는 거야?",
+   "en": "can't you just borrow it?"
+  },
+  {
+   "t": [
+    132.2,
+    134.8
+   ],
+   "speaker": "guest",
+   "text": "그게 안 되는 경우가 많아",
+   "en": "Often you can't"
+  },
+  {
+   "t": [
+    134.9,
+    137.29
+   ],
+   "speaker": "guest",
+   "text": "대출 한도는 결혼 시기 땡긴다고",
+   "en": "Your loan limit doesn't grow"
+  },
+  {
+   "t": [
+    137.29,
+    138.3
+   ],
+   "speaker": "guest",
+   "text": "늘어나는 게 아니거든",
+   "en": "just because the wedding moves up"
+  },
+  {
+   "t": [
+    152.5,
+    155.1
+   ],
+   "speaker": "host",
+   "text": "그럼 AI를 활용해서",
+   "en": "So with AI,"
+  },
+  {
+   "t": [
+    155.4,
+    158.8
+   ],
+   "speaker": "host",
+   "text": "결혼을 내년으로 바꿔줘 하면",
+   "en": "if you say 'move the wedding to next year',"
+  },
+  {
+   "t": [
+    159.2,
+    160.46
+   ],
+   "speaker": "host",
+   "text": "저축액만 고친다고",
+   "en": "just fixing the savings"
+  },
+  {
+   "t": [
+    160.46,
+    161.62
+   ],
+   "speaker": "host",
+   "text": "해결되는 건 아니겠지?",
+   "en": "won't solve it, right?"
+  },
+  {
+   "t": [
+    161.62,
+    164.2
+   ],
+   "speaker": "guest",
+   "text": "그치 조금 더 복잡하지",
+   "en": "Right, it's more complex"
+  },
+  {
+   "t": [
+    164.4,
+    166.9
+   ],
+   "speaker": "guest",
+   "text": "집에 쓸 돈 필요한 대출",
+   "en": "Housing budget, the loan you need,"
+  },
+  {
+   "t": [
+    166.9,
+    169.15
+   ],
+   "speaker": "guest",
+   "text": "월에 얼마 상환할지",
+   "en": "monthly repayments,"
+  },
+  {
+   "t": [
+    169.15,
+    170.34
+   ],
+   "speaker": "guest",
+   "text": "남는 생활비까지",
+   "en": "what's left to live on"
+  },
+  {
+   "t": [
+    170.34,
+    172.1
+   ],
+   "speaker": "guest",
+   "text": "다 다시 계산해야 돼",
+   "en": "all need recalculating"
+  },
+  {
+   "t": [
+    232.2,
+    234.9
+   ],
+   "speaker": "host",
+   "text": "AI가 그럴듯하게",
+   "en": "Rather than AI writing"
+  },
+  {
+   "t": [
+    235.0,
+    236.1
+   ],
+   "speaker": "host",
+   "text": "보고서 쓰는 것보다",
+   "en": "a plausible report,"
+  },
+  {
+   "t": [
+    237.0,
+    238.15
+   ],
+   "speaker": "host",
+   "text": "조건이 바뀔 때마다",
+   "en": "every time conditions change,"
+  },
+  {
+   "t": [
+    238.18,
+    240.42
+   ],
+   "speaker": "host",
+   "text": "네 일을 얼마나 줄여주냐",
+   "en": "how much of your work it cuts,"
+  },
+  {
+   "t": [
+    240.44,
+    242.7
+   ],
+   "speaker": "host",
+   "text": "시간을 줄여주냐가 키겠네",
+   "en": "how much time it saves, that's key"
+  },
+  {
+   "t": [
+    242.7,
+    244.3
+   ],
+   "speaker": "guest",
+   "text": "그렇지",
+   "en": "Exactly."
+  },
+  {
+   "t": [
+    246.8,
+    249.72
+   ],
+   "speaker": "guest",
+   "text": "지금 쓰는 클로드도 할 수 있지 않나?",
+   "en": "Can't the Claude I use already do that?"
+  },
+  {
+   "t": [
+    250.08,
+    253.8
+   ],
+   "speaker": "guest",
+   "text": "비싼 거 쓰면 뭐가 다른데?",
+   "en": "So what's different with the pricey one?"
+  },
+  {
+   "t": [
+    253.8,
+    255.85
+   ],
+   "speaker": "host",
+   "text": "GPT-6 아스트라 쓰면",
+   "en": "With GPT-6 Astra,"
+  },
+  {
+   "t": [
+    255.86,
+    256.7
+   ],
+   "speaker": "host",
+   "text": "얼마나 다를까?",
+   "en": "how different would it be?"
+  },
+  {
+   "t": [
+    256.9,
+    258.2
+   ],
+   "speaker": "host",
+   "text": "나도 궁금해서",
+   "en": "I'm curious too"
+  },
+  {
+   "t": [
+    258.25,
+    260.3
+   ],
+   "speaker": "host",
+   "text": "같은 자료로 한번 비교해보자",
+   "en": "Let's compare with the same data"
+  }
+ ],
+ "cards": [
+  {
+   "at_t": 116.06,
+   "dur": 6.5,
+   "title": "결혼 3년 → 1년",
+   "lines": [
+    "매달 100만 원 × 24개월",
+    "덜 모이는 돈"
+   ],
+   "accent": "2,400만 원",
+   "dir": "down"
+  },
+  {
+   "at_t": 164.49,
+   "dur": 5.0,
+   "title": "조건 바뀌면 다시 계산",
+   "lines": [
+    "집 예산 + 대출",
+    "월 상환액",
+    "남는 생활비"
+   ]
+  }
+ ],
+ "target_out": 102.0,
+ "retime": [
+  {
+   "i": 227,
+   "src": [
+    110.54,
+    110.79
+   ]
+  },
+  {
+   "i": 492,
+   "src": [
+    242.98,
+    243.55
+   ]
+  },
+  {
+   "i": 187,
+   "src": [
+    91.82,
+    92.22
+   ]
+  }
+ ],
+ "speed_cap": 1.32,
+ "turn_gap": 0.2,
+ "retouch": {
+  "off": true
+ },
+ "zoom": {
+  "host_cut": 1.08,
+  "min_hold": 3.0,
+  "min_gap": 8.0
+ },
+ "zoom_mode": "host_cut",
+ "cold_open": {
+  "spans": [
+   [
+    247.58,
+    249.72
+   ],
+   [
+    250.05,
+    253.3
+   ]
+  ],
+  "captions": [
+   {
+    "t": [
+     247.62,
+     249.69
+    ],
+    "speaker": "guest",
+    "text": "지금 쓰는 클로드도 할 수 있지 않나?",
+    "en": "Can't the Claude I use already do that?"
+   },
+   {
+    "t": [
+     250.09,
+     253.2
+    ],
+    "speaker": "guest",
+    "text": "비싼 거 쓰면 뭐가 다른데?",
+    "en": "So what's different with the pricey one?"
+   }
+  ],
+  "transition": "cut"
+ },
+ "audio": {
+  "mode": "passthrough",
+  "target_lufs": -10.5,
+  "host_gain_db": 0.0
+ },
+ "stage": "final",
+ "grade": {
+  "mode": "none",
+  "sharpen": false
+ },
+ "modules": {
+  "header": true,
+  "hook": true,
+  "character": true,
+  "zoom": true,
+  "cards": true
+ },
+ "mute_extra": [
+  {
+   "src": 113.1,
+   "add": 0.06
+  },
+  {
+   "src": 152.57,
+   "add": 0.06
+  },
+  {
+   "src": 109.08,
+   "add": 0.05
+  }
+ ]
+}

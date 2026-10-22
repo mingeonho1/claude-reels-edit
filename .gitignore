@@ -1,0 +1,17 @@
+# media and generated work — never commit footage
+*.mov
+*.MOV
+*.mp4
+*.wav
+*.npy
+*.npz
+_reels_work/
+_bundle.tgz
+*.tgz
+# downloaded assets (scripts/fetch_assets.sh)
+skills/reels-talk-edit/assets/*.ttf
+skills/reels-talk-edit/assets/*.otf
+skills/reels-talk-edit/assets/*.onnx
+skills/reels-talk-edit/assets/*.gif
+__pycache__/
+.DS_Store
