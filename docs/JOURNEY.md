@@ -37,21 +37,58 @@ zoom punch-ins, flash transitions, cards and the character.
 
 ## 2. What went wrong — my feedback on v1
 
-I watched the previews and gave notes one by one. Each turned into a rule or a fix:
+I watched the previews and gave notes one by one (quotes are mine, translated from Korean).
+
+### 2a. Face retouch: every fix moved the problem somewhere else
+
+My first ask was modest: *"a bit of face colour correction and light retouching, make the face just a little
+smaller."* v1 did it the way you would in ffmpeg — a colour grade, bilateral skin smoothing inside a face mask, and
+a face-slimming warp around the jaw and cheeks.
+
+| Round | What I said | What was going on | What changed |
+|---|---|---|---|
+| 1 | *"Retouch the face just 5 % more."* | the effect was too subtle to see | stronger smoothing and slimming |
+| 2 | *"The frame feels more zoomed in than the original — Instagram crops it again, so a zoomed-in base looks bad."* | the base framing had been cropped tighter than the source | base framing back to the full source frame; zoom only as an occasional punch-in |
+| 3 | *"The face retouch here looks unnatural. Just shrink the whole head a bit."* (with screenshots) | the per-region slim bent the jawline and cheeks differently, so the face shape looked off | slimming removed; one uniform 3.5 % head shrink |
+| 4 | *"Skin smoothing at 0.60 is fine."* | — | smoothing blend 0.60 |
+| 5 | *"When there's no zoom and 정우 is talking, my neck looks broken. Why?"* | ffmpeg 4.4's `remap` only does nearest-neighbour sampling, and the warp went through 4:2:0 ↔ 4:4:4 conversions, so the edge of the warped area tore at the neck | warp moved to a bilinear `cv2.remap` in a pipe |
+
+Each round fixed what I pointed at, but a hand-built retouch has no face model: it doesn't know where the jaw, the
+neck or the hair is, so any geometric warp risks tearing a boundary somewhere, and smoothing that's strong enough to
+see starts to look waxy. CapCut's beauty tools are face-aware.
+
+### 2b. Voice: louder also meant noisier
+
+The raw takes were very quiet (≈ −41 LUFS on a lav mic), and I asked *"can you make just our voices a bit louder?"*.
+v1 used a classic voice chain — high-pass 80 Hz, FFT denoise, EQ (−2 dB at 300 Hz, +2 dB at 3 kHz), a 3:1
+compressor — then about +30 dB of gain and a limiter.
+
+- With one mic, "only our voices" is not something you can isolate. Pushing the level pushed the room too, and
+  정우 is off-mic across the table, so his voice comes with more room sound than mine.
+- The denoise and compressor change the voice's texture; at this much gain the processing becomes audible.
+- Tight cuts with fully muted pre-roll left digital-silence dropouts in the room tone; they had to become 3 %
+  instead of 0 %.
+
+It got loud enough and it passed the loudness meter, but it didn't sound like CapCut's voice enhance on the same
+clip.
+
+### 2c. Editing rhythm
 
 | Feedback | Cause | Fix (now a rule) |
 |---|---|---|
-| "Slightly too fast" | avg 1.33× | host 1.20 / guest 1.30 / mixed 1.25, cap 1.32 |
-| "The gap between 정우 and me is too short" | turns butted together at ~0.05 s | 0.20 s silence at every speaker change (natural turn-taking gap ≈ 200 ms); extend into real quiet, else pre-roll the next shot with audio at 3 % |
-| "The zoom feels awkward" | punch-ins mid-shot, also on 정우's lines | 1.08× only as a hard cut exactly where *my* line starts (black caption), out at the next cut; never mid-sentence, never on guest lines, ≤ 1 per 8 s |
-| "Face retouch looks unnatural" | per-region face slimming | removed; only a uniform 3.5 % head shrink |
-| "My neck breaks when 정우 talks" | ffmpeg 4.4 `remap` is nearest-neighbour + 4:2:0↔4:4:4 round trips | bilinear `cv2.remap` warp in a pipe |
-| "Put 'can't the Claude I use already do that?' up front as the hook, transition naturally" | — | multi-span cold open; a plain hard cut into the episode (flash + whoosh read as cheap → only on request) |
-| "English should come from the Korean" | EN was written from the audio and drifted from the caption | EN = 1:1 translation of the *final* Korean caption, same timing |
-| "Audio is too quiet" | raw takes at ≈ −41 LUFS | loudness target with a secant gain search + limiter, verified on the output |
+| "Slightly too fast; slow it down just a touch" | avg 1.33× | host 1.20 / guest 1.30 / mixed 1.25, cap 1.32 |
+| "The gap between 정우 and me is too short — keep at least ~0.1 s" | turns butted together at ~0.05 s | 0.20 s silence at every speaker change (natural turn-taking gap ≈ 200 ms) |
+| "The zoom-ins feel awkward — only zoom when the black caption (my line) appears" | punch-ins mid-shot, also on 정우's lines | 1.08× only as a hard cut exactly where *my* line starts, out at the next cut, ≤ 1 per 8 s |
+| "Put 'can't the Claude I use already do that? what's different if I pay more?' up front as the hook, with a transition feel" | — | multi-span cold open; a plain hard cut into the episode (flash + whoosh looked cheap → only on request) |
+| "The cut around 'one date changed, is that so big?' feels awkward" | the cut into that line landed awkwardly | re-cut with `retime` in the plan; edges follow the RMS envelope, not STT word times |
+| "English subtitles have to be based on the Korean ones" | EN was written from the audio and drifted from the caption | EN = 1:1 translation of the *final* Korean caption, same timing |
 
-Then the honest verdict after a full test: **it still felt awkward.** Lots of small automated "enhancements" added
-up to something that didn't look like my edit.
+### 2d. The verdict
+
+After all of that I ran a full test and the answer was still: **it looks awkward.** Each fix was right on its own,
+but a stack of small automated "improvements" — grade, smoothing, warp, voice chain, zooms, flashes — didn't add up
+to something that looked like my edit. Meanwhile, doing voice, face, colour and sharpness in CapCut took me about
+two minutes and looked better. That is what led to v2.
 
 ## 3. v2 — redesign around the bottleneck (2026-10-22)
 

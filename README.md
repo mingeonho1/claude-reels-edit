@@ -20,9 +20,12 @@ shows you a preview at each step, has an independent QA agent check the result, 
 ## Why this exists
 
 When I edited in CapCut, the time went to two things: **cuts ≫ captions ≫ everything else**.
-Voice cleanup, skin, colour and sharpening take about two minutes with CapCut's one-click tools and look better
-than anything I could rebuild in ffmpeg. So the skill uses AI **only at the bottleneck** and leaves the
-quality-sensitive look to CapCut:
+
+The first version tried to do everything, including the look. After five rounds of feedback the face retouch
+still looked off (the slimming warp bent my jaw, then tore at my neck) and the voice chain made us louder but
+noticeably processed. Meanwhile CapCut did voice, face, colour and sharpness in about two minutes and looked better
+([the full story](docs/JOURNEY.md#2-what-went-wrong--my-feedback-on-v1)). So the skill uses AI **only at the
+bottleneck** and leaves the quality-sensitive look to CapCut:
 
 | Step | Who | Why |
 |---|---|---|
