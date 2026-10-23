@@ -704,9 +704,9 @@
  ],
  "mosaic": {
   "track": "guest_face.npz",
-  "block": 0.1,
-  "blend": 0.9,
-  "soften": 0.45,
+  "block": 0.12,
+  "blend": 0.95,
+  "soften": 0.38,
   "feather": 0.3,
   "pad": [
    0.12,

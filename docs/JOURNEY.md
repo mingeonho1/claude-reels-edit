@@ -166,7 +166,7 @@ What had to change, and why:
 | Proxy squashed the frame | the proxy step forced 720x1280 | scale by orientation (1280x720 for landscape) — never stretch |
 | Layout was portrait-only | caption rows, header and hook were measured on a 2160x3840 frame | `orientation: landscape` = a 3840x2160 canvas with its own layout; captions centred above the bottom 15 % (after rotation that edge sits under Instagram's right-hand buttons), header/hook left of centre to clear my head |
 | Rotation | my first try (`cclock`) put the image's top on the left; the reference reel I showed has it on the right | `rotate: clock` turns each finished frame inside the render, so the 4K master comes out 2160x3840 with no extra encode |
-| Guest privacy | — | `track_guest.py` follows the guest's face; the render pixelates it (block = 10 % of face width), softens the blocks and feathers an ellipse, at every stage including previews |
+| Guest privacy | — | `track_guest.py` follows the guest's face; the render pixelates it (block = 12 % of face width), softens the blocks and feathers an ellipse, at every stage including previews |
 | Guest character | 정우's GIF makes no sense when the guest is on screen | character module off |
 | Who is speaking | diarization collapsed (617 vs 62 windows): two voices on one mic | speakers assigned from the content + my mouth motion (guest lines have low host logits), written into `words_patch.json` |
 | Hook covered the first lines | the hook used to replace captions during its 3.4 s | `hook.keep_captions` — the title sits above the caption rows |

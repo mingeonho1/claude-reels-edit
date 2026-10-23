@@ -23,8 +23,8 @@ the user pointed at, 2026-10-23). This is an occasional format, not the default.
 ## Modules
 - `character`: **off** (the guest is visible). `zoom`: off by default. `cards`: allowed, same rules as portrait.
 - Guest face mosaic (when the guest isn't a regular / asks for it): `python3 $S/track_guest.py prx/src_720.mp4
-  guest_face.npz --side left|right`, then plan `"mosaic": {"track": "guest_face.npz", "block": 0.10, "blend": 0.9,
-  "soften": 0.45, "feather": 0.30, "pad": [0.12, 0.10]}`. Block = 10 % of the face width, Gaussian-softened, feathered
+  guest_face.npz --side left|right`, then plan `"mosaic": {"track": "guest_face.npz", "block": 0.12, "blend": 0.95,
+  "soften": 0.38, "feather": 0.30, "pad": [0.12, 0.10]}`. Block = 12 % of the face width (ep11: 10 % read as too light), Gaussian-softened, feathered
   ellipse → features unreadable, face shape still there ("은은하게 보일듯말듯"). It applies at every stage, previews
   included. Ship `guest_face.npz` next to `edl.json` in the 4K job.
 

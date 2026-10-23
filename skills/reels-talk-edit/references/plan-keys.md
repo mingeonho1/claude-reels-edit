@@ -18,7 +18,7 @@
 | `cards[]` | `{at_t, dur, title, lines[], accent, dir}` |
 | `modules` | `{header, hook, character, zoom, cards}` |
 | `zoom_mode` / `zoom` | `host_cut` · `{host_cut 1.08, min_zoom 1.5, min_gap 8}` |
-| `mosaic` | `{track, block 0.10, blend 0.9, soften 0.45, feather 0.30, pad [0.12, 0.10]}` |
+| `mosaic` | `{track, block 0.12, blend 0.95, soften 0.38, feather 0.30, pad [0.12, 0.10]}` |
 | `style` | overrides merged into the layout (`header.line1/line2`, `hook.cx`, caption rows …) |
 | `names` | `{host, guest}` labels for the cut list |
 | `grade` | `{mode none\|his_look\|param, sharpen}` |
