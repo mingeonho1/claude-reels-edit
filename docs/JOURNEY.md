@@ -15,14 +15,14 @@ every sentence really starts and ends, removing fillers and false starts, tighte
 The reference for "my style" is ep9, 「트럼프 전쟁」 — [the reel I edited myself in CapCut](https://www.instagram.com/reel/DeIZ4g9J8vI/).
 CapCut stores a project as a plaintext JSON draft, so instead of eyeballing it I could read the exact segment
 boundaries, speed per segment, caption font/size/position/colour and character timing out of it. That became
-`ref/style_spec.md` and the ground truth `ref/gt9.json`.
+`references/style_spec.md` and the ground truth `eval/gt9.json`.
 
 ## 1. v1 — a tournament between three agent teams (2026-10-21)
 
 The first idea was to let agents compete: three teams got the same brief (my words, the measured style spec, a
 retention-research note, ep9 raw + my final, ep10 raw) and each built a full skill. Scoring:
 
-1. **ep9 auto score** (`ref/evaluate.py`, max 95) against my own edit: cut agreement (source-timeline F1, no cuts
+1. **ep9 auto score** (`eval/evaluate.py`, max 95) against my own edit: cut agreement (source-timeline F1, no cuts
    inside speech), pace, caption text and form, speaker/character accuracy, render conformance, loudness.
 2. **ep10 judge score**: a judge agent watched each team's ep10 render (same composition, new content) for caption
    correctness, cut quality, style fidelity, retention devices, retouch and audio.
@@ -129,17 +129,18 @@ I'd spotted in the plan. Round 2: 0 blockers. See [`examples/ep10/qa_round1_find
 | Speed 1.2–1.32 | my ep9 (1.2–1.4) + feedback "slightly slower" |
 | Turn gap 0.20 s | conversation-analysis turn-taking gap (~200 ms) + feedback |
 | Cut only inside quiet ≥ 0.28 s, pads 0.09 / 0.12 s, 12 ms fades | avoids clipped consonants and clicks (checked by QA) |
-| Punch-in ≤ 1 per 8–10 s, hard cuts only, no flash/whoosh | retention research ([`ref/retention_research.md`](../skills/reels-talk-edit/ref/retention_research.md)) + feedback |
+| Punch-in ≤ 1 per 8–10 s, hard cuts only, no flash/whoosh | retention research ([`references/retention_research.md`](../skills/reels-talk-edit/references/retention_research.md)) + feedback |
 | Cards ≤ 1 per 15–20 s, only numbers said on tape | research + "no fake facts on screen" |
 | No karaoke captions, no emoji | my style + research on readability |
 
 ## 5. Testing
 
-- **ep9 (my own edit)** = the regression test. Any rule change → re-plan ep9 → `ref/evaluate.py`; a drop of more
+- **ep9 (my own edit)** = the regression test. Any rule change → re-plan ep9 → `eval/evaluate.py`; a drop of more
   than 1 point is a regression.
 - **ep10** = same day, same framing, different content (GPT-6). 283.5 s → 97.3 s, 34 segments, 58 KR/EN captions,
   cold-open hook "AI 전문가인 척하기". The full plan is in [`examples/ep10/plan.json`](../examples/ep10/plan.json).
-- **Next**: different framings — other seating, a second camera angle — to see which rules are format-specific.
+- **ep11** = a different framing (case 2, below).
+- **Next**: two cameras, standing or walking shots.
 
 ## 6. What I'd tell someone adapting it
 
@@ -147,3 +148,41 @@ I'd spotted in the plan. Round 2: 0 blockers. See [`examples/ep10/qa_round1_find
 - Let Claude make the editorial calls in a plan file; keep scripts deterministic. Every fix becomes a one-line edit.
 - Put a gate after the cut. It is the decision that matters most and the cheapest one to change.
 - Have a second agent that doesn't trust the first one listen to the output.
+
+## 7. Case 2 — a different framing (ep11)
+
+![ep11: the clockwise-rotated upload (left) and the landscape edit (right); the guest's face is softly mosaicked in the video](img/ep11_frames.jpg)
+
+ep11 「AI 빈부격차」 broke three assumptions at once: the take is **landscape** (3840x2160), **both people are on
+camera**, and the guest is **not 정우** but a friend who teaches special education at a middle school. I also wanted
+to try a format that's common right now: post the landscape video **turned 90° clockwise** so it fills a vertical
+screen and the viewer tilts the phone to watch it. The guest is a friend, not a regular, so his face is **softly
+mosaicked** — barely there, features unreadable — and the show tagline became 저품격 ("low-class") 힐링 토크쇼.
+
+What had to change, and why:
+
+| Problem | What happened | Change |
+|---|---|---|
+| Proxy squashed the frame | the proxy step forced 720x1280 | scale by orientation (1280x720 for landscape) — never stretch |
+| Layout was portrait-only | caption rows, header and hook were measured on a 2160x3840 frame | `orientation: landscape` = a 3840x2160 canvas with its own layout; captions centred above the bottom 15 % (after rotation that edge sits under Instagram's right-hand buttons), header/hook left of centre to clear my head |
+| Rotation | my first try (`cclock`) put the image's top on the left; the reference reel I showed has it on the right | `rotate: clock` turns each finished frame inside the render, so the 4K master comes out 2160x3840 with no extra encode |
+| Guest privacy | — | `track_guest.py` follows the guest's face; the render pixelates it (block = 10 % of face width), softens the blocks and feathers an ellipse, at every stage including previews |
+| Guest character | 정우's GIF makes no sense when the guest is on screen | character module off |
+| Who is speaking | diarization collapsed (617 vs 62 windows): two voices on one mic | speakers assigned from the content + my mouth motion (guest lines have low host logits), written into `words_patch.json` |
+| Hook covered the first lines | the hook used to replace captions during its 3.4 s | `hook.keep_captions` — the title sits above the caption rows |
+| Dead air that wasn't "quiet" | 0.8 s between two speakers read as room noise, so no cut | `plan.cut` forces a cut through a source span |
+
+The take itself felt a bit stiff, so the cut is aggressive: 219.5 s → 94.1 s. Two threads were in the take — a
+personal tip (lower your reasoning level, you're burning tokens) and the news (China may allow some Nvidia chips; AI
+compute is scarce). I kept the tip as the spine, kept the news only where it explains *why* limits exist, dropped the
+operating-cost and pricing loops, and ended on the tip again.
+
+The QA agent found 0 blockers and 2 majors on round 1: 0.8 s of dead air after "쓰지" (the STT had the word 0.5 s too
+early, so the cut sat in the wrong place) and a double jump cut around a lone "그치". Both were fixed in the plan;
+the rest were English polish and caption timing. See [`examples/ep11`](../examples/ep11).
+
+The 4K master renders at ~3 fps on the Mac (mosaic included): 2822 frames, 94.1 s, 2160x3840 HEVC 10-bit, −10.5 LUFS.
+
+What I learned about the skill itself: a new framing should not be a new skill. The workflow didn't change at all;
+only layout, speakers and upload format did. So the skill now keeps the workflow in SKILL.md and moves each format
+into its own reference file (see the README's *Skill design* section).

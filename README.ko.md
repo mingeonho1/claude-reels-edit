@@ -14,6 +14,8 @@
 
 ![스킬로 편집한 10번: 훅 타이틀, 헤더, 한국어 자막 + 영어 한 줄, 정우 캐릭터](docs/img/ep10_frames.jpg)
 
+![두 번째 케이스 11번: 가로 투샷을 시계 방향 90°로 돌린 업로드본(왼쪽, 폰을 눕혀서 봄)과 가로 편집본(오른쪽). 친구 얼굴은 영상에서 은은하게 모자이크](docs/img/ep11_frames.jpg)
+
 ---
 
 ## 왜 만들었나
@@ -38,9 +40,10 @@ CapCut으로 편집할 때 시간을 잡아먹는 건 딱 두 가지였어. **�
 
 | 에피소드 | 내용 | 결과 |
 |---|---|---|
-| **9번 「트럼프 전쟁」** — [내가 직접 CapCut으로 편집한 릴스](https://www.instagram.com/reel/DeIZ4g9J8vI/) | 기준 정답. CapCut 드래프트 JSON에서 컷, 배속, 자막 스타일, 캐릭터 타이밍을 그대로 읽음 | 스타일 스펙 + 자동 채점기 (`ref/gt9.json`, `ref/evaluate.py`) |
+| **9번 「트럼프 전쟁」** — [내가 직접 CapCut으로 편집한 릴스](https://www.instagram.com/reel/DeIZ4g9J8vI/) | 기준 정답. CapCut 드래프트 JSON에서 컷, 배속, 자막 스타일, 캐릭터 타이밍을 그대로 읽음 | 스타일 스펙 + 자동 채점기 (`eval/gt9.json`, `eval/evaluate.py`) |
 | **10번 「GPT-6」** — 같은 날, 같은 구도, 다른 내용 | 283.5초 원본 → **97.3초**, 34컷, 한·영 자막 58개, 콜드오픈 훅 | 검수 1라운드 blocker 1 / major 3 / minor 11 → 2라운드 blocker 0 ([검수 결과](examples/ep10/qa_round1_findings.json)) |
-| 다른 구도 | 다음 테스트: 다른 자리 배치, 카메라 2대 | 예정 |
+| **11번 「AI 빈부격차」** — 다른 구도: 가로 투샷, 게스트도 화면에 나옴(정우가 아니라 중등 특수교사 친구) | 219.5초 원본 → **94.1초**, 25컷, 한·영 자막 56개, 가로 편집본을 시계 방향 90°로 돌려 업로드(보는 사람이 폰을 눕힘), 친구 얼굴 은은한 모자이크 | 검수 1라운드 blocker 0 / major 2 / minor 12 → major 전부 수정 ([두 번째 케이스](docs/JOURNEY.ko.md#7-두-번째-케이스--다른-구도-11번)) |
+| 더 다른 구도 | 다음 테스트: 카메라 2대, 서서/걸으면서 찍은 영상 | 예정 |
 
 ---
 
@@ -51,7 +54,8 @@ CapCut으로 편집할 때 시간을 잡아먹는 건 딱 두 가지였어. **�
 | [`skills/reels-talk-edit/`](skills/reels-talk-edit/SKILL.md) | 메인 스킬. 에이전트 하나가 순서대로 따라가는 단계형 워크플로우 (인테이크 → 컷 → 자막 → 연출 → 검수 → 4K) |
 | [`skills/reels-qa/`](skills/reels-qa/SKILL.md) | 검수 스킬. 편집 계획을 모르는 새 서브에이전트가 실행 |
 | `skills/reels-talk-edit/scripts/` | Claude가 호출하는 결정적 도구: STT + 단어 정렬, 화자 분리, 얼굴 추적, EDL 빌더, 렌더러, 컷 리스트, 자동 검수 |
-| `skills/reels-talk-edit/ref/` | 내 편집에서 측정한 스타일 스펙, 이탈 방지 리서치, 9번 정답 + 채점기 |
+| `skills/reels-talk-edit/references/` | 필요할 때만 읽는 문서: 구도별 파일(세로·게스트 화면 밖 / 가로 투샷), 원본 보정 재현, plan 키, 내 편집에서 측정한 스타일 스펙, 이탈 방지 리서치 |
+| `skills/reels-talk-edit/eval/` | 9번 정답 + 채점기 (회귀 테스트) |
 | [`examples/ep10/`](examples/ep10) | 실제 `plan.json`(편집 결정 전부 + 한·영 자막), 컷 리스트, 검수 리포트 |
 | [`docs/JOURNEY.ko.md`](docs/JOURNEY.ko.md) | 왜 이렇게 만들었고 어떤 과정을 거쳤는지 (대결, 피드백, 재설계) |
 
@@ -81,6 +85,25 @@ mkdir -p ~/.claude/skills && cp -R skills/reels-talk-edit skills/reels-qa ~/.cla
 
 필요한 것: Python 3.10+, libx265가 들어간 ffmpeg 4.4 이상, 모델용 디스크 ~2 GB. 게스트 캐릭터 GIF는 포함하지
 않았어. 투명 GIF를 `skills/reels-talk-edit/assets/character.gif`에 넣거나 캐릭터 모듈을 꺼.
+
+---
+
+## 🧩 스킬 구조 (스킬 하나 + 참고 문서로 나눈 이유)
+
+[Claude 스킬 작성 가이드](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices),
+[Claude Code 스킬 문서](https://code.claude.com/docs/en/skills), [Codex 스킬 문서](https://developers.openai.com/codex/skills)를 보고 정했어.
+
+| 가이드 | 이 레포에서는 |
+|---|---|
+| Codex: 스킬 하나는 한 가지 일만 | `reels-talk-edit` = 촬영본 → 완성 릴스. `reels-qa` = 완성본 검수(다른 일) |
+| Claude: SKILL.md는 500줄 이하, 자세한 내용은 필요할 때만 읽는 파일로, 한 단계 깊이, 변형별로 정리 | SKILL.md엔 워크플로우만(약 120줄). 구도는 파일 하나씩(`format-portrait-offcam.md`, `format-landscape-twoshot.md`)이고 Claude는 그중 하나만 읽어. 원본 보정 재현, plan 키 전체도 참고 문서 |
+| Claude: 여러 단계 작업엔 체크리스트 + 검증 루프 | 6단계 체크리스트, 승인 2번, 검수 → 수정 → 재검수(blocker·major 0까지) |
+| Claude: 결정적인 일은 스크립트로 | 편집 판단은 Claude가 `plan.json`에, 타이밍·렌더·측정은 스크립트가 |
+| Claude Code: `context: fork`로 격리된 서브에이전트 실행 | `reels-qa`에 `context: fork`를 넣어서 편집 계획을 아예 못 보게 함 |
+
+그래서 새 구도(11번 가로 투샷)는 새 스킬이 아니라 참고 문서 하나가 늘어나는 거야. 내가 원하는 워크플로우(컷 → 승인 →
+한국어 → 그걸 번역한 영어 → 승인 → 선택 연출 → 독립 검수 → 4K)는 한 곳에 그대로 있어. 두 스킬 다 공통 SKILL.md
+형식이라 Codex(`~/.agents/skills/`)에서도 돌아가.
 
 ---
 
@@ -145,5 +168,5 @@ CapCut 결과의 85–90% 정도라서 기본은 꺼져 있어.
 ## 📄 라이선스 · 크레딧
 
 - 코드와 문서: [MIT](LICENSE). 서드파티 에셋은 재배포하지 않고 `fetch_assets.sh`로 받아. [NOTICE](NOTICE) 참고.
-- `examples/`와 `ref/gt9.json`에는 내가 공개한 에피소드의 대본이 들어 있어. 테스트 용도로만 써줘.
+- `examples/`와 `eval/gt9.json`에는 내가 공개한 에피소드의 대본이 들어 있어. 테스트 용도로만 써줘.
 - 개인 프로젝트이고 Anthropic, Instagram, CapCut과는 관계없어.

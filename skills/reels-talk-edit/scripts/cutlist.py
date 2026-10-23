@@ -25,7 +25,8 @@ lines = [f"# 컷 리스트 — 출력 {E['out_duration']:.1f}s, 세그먼트 {le
          "| 출력 | 원본 | 배속 | 화자 | 들리는 말 |", "|---|---|---|---|---|"]
 for s in E['segments']:
     ws = [w for w in W if s['src_start'] - 0.02 <= (w['start'] + w['end']) / 2 <= s['src_end'] + 0.02]
-    spk = '/'.join(dict.fromkeys(('나' if w['spk'] == 'host' else '정우') for w in ws)) or '-'
+    NM = P.get('names', {})
+    spk = '/'.join(dict.fromkeys((NM.get('host', '나') if w['spk'] == 'host' else NM.get('guest', '정우')) for w in ws)) or '-'
     tag = ' (콜드오픈)' if s.get('cold') else ''
     lines.append(f"| {fmt(s['out_start'])}–{fmt(s['out_end'])}{tag} | {s['src_start']:.1f}–{s['src_end']:.1f} | "
                  f"{s['speed']:.2f} | {spk} | {' '.join(w['w'] for w in ws)} |")

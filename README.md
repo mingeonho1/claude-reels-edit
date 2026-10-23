@@ -15,6 +15,8 @@ shows you a preview at each step, has an independent QA agent check the result, 
 
 ![ep10 edited by the skill: hook title, header, Korean caption + English line, guest character](docs/img/ep10_frames.jpg)
 
+![ep11, case 2: landscape two-shot turned 90° clockwise for a tilt-your-phone upload (left) and the landscape edit (right); the guest's face is softly mosaicked in the video](docs/img/ep11_frames.jpg)
+
 ---
 
 ## Why this exists
@@ -40,9 +42,10 @@ bottleneck** and leaves the quality-sensitive look to CapCut:
 
 | Episode | What | Result |
 |---|---|---|
-| **ep9 「트럼프 전쟁」** — [my own CapCut edit](https://www.instagram.com/reel/DeIZ4g9J8vI/) | ground truth: segments, speeds, caption styles and character timing read from the CapCut draft JSON | style spec + an automatic evaluator (`ref/gt9.json`, `ref/evaluate.py`) |
+| **ep9 「트럼프 전쟁」** — [my own CapCut edit](https://www.instagram.com/reel/DeIZ4g9J8vI/) | ground truth: segments, speeds, caption styles and character timing read from the CapCut draft JSON | style spec + an automatic evaluator (`eval/gt9.json`, `eval/evaluate.py`) |
 | **ep10 「GPT-6」** — same set-up and framing, different content | 283.5 s take → **97.3 s**, 34 segments, 58 KR+EN captions, cold-open hook | QA round 1: 1 blocker / 3 major / 11 minor → round 2: 0 blocker ([findings](examples/ep10/qa_round1_findings.json)) |
-| other framings | next: different seating, a second camera angle | planned |
+| **ep11 「AI 빈부격차」** — a different framing: landscape two-shot, guest on camera (a middle-school special-ed teacher friend, not 정우) | 219.5 s take → **94.1 s**, 25 segments, 56 KR+EN captions; uploaded as a landscape edit turned 90° clockwise (the viewer tilts the phone), guest face softly mosaicked | QA round 1: 0 blocker / 2 major / 12 minor → all majors fixed ([case 2](docs/JOURNEY.md#7-case-2--a-different-framing-ep11)) |
+| more framings | next: two cameras, standing / walking shots | planned |
 
 ---
 
@@ -53,7 +56,8 @@ bottleneck** and leaves the quality-sensitive look to CapCut:
 | [`skills/reels-talk-edit/`](skills/reels-talk-edit/SKILL.md) | The main skill: a staged workflow (intake → cut → subs → enhance → QA → 4K) that one agent follows in order |
 | [`skills/reels-qa/`](skills/reels-qa/SKILL.md) | The QA skill, run by a fresh subagent that never sees the editing plan |
 | `skills/reels-talk-edit/scripts/` | Deterministic tools Claude calls: STT + word alignment, diarization, face track, EDL builder, renderer, cut list, auto QA |
-| `skills/reels-talk-edit/ref/` | Style spec measured from my edit, retention research notes, ep9 ground truth + evaluator |
+| `skills/reels-talk-edit/references/` | Loaded on demand: one file per format (portrait off-camera / landscape two-shot), retouch-from-raw, plan keys, the style spec measured from my edit, retention research |
+| `skills/reels-talk-edit/eval/` | ep9 ground truth + evaluator (regression test) |
 | [`examples/ep10/`](examples/ep10) | A real `plan.json` (every editorial decision + KR/EN captions), the cut list and the QA report |
 | [`docs/JOURNEY.md`](docs/JOURNEY.md) | Why it is built this way and how it got here (tournament, feedback, redesign) |
 
@@ -84,6 +88,25 @@ mkdir -p ~/.claude/skills && cp -R skills/reels-talk-edit skills/reels-qa ~/.cla
 
 Requirements: Python 3.10+, ffmpeg ≥ 4.4 with libx265, ~2 GB disk for models. A guest character GIF is not
 included — put your own transparent GIF at `skills/reels-talk-edit/assets/character.gif` or switch the module off.
+
+---
+
+## 🧩 Skill design (why one skill + references)
+
+Checked against [Claude's skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices),
+[Claude Code skills](https://code.claude.com/docs/en/skills) and [Codex skills](https://developers.openai.com/codex/skills):
+
+| Guidance | What this repo does |
+|---|---|
+| Codex: "keep each skill focused on one job" | `reels-talk-edit` = one job (footage → finished reel). `reels-qa` = a different job (review a finished reel) |
+| Claude: SKILL.md under 500 lines, details in files loaded only when needed, one level deep, organised by variant | SKILL.md holds only the workflow (~120 lines). Each format is one reference file — `format-portrait-offcam.md`, `format-landscape-twoshot.md` — and Claude reads exactly one. Retouch-from-raw and the full plan keys are references too |
+| Claude: checklists + feedback loops for multi-step work | the 6-stage checklist, two approval gates, QA → fix → re-check until 0 blocker / 0 major |
+| Claude: scripts for deterministic work | Claude makes the editorial calls in `plan.json`; scripts do timing, rendering and measuring |
+| Claude Code: `context: fork` runs a skill in an isolated subagent | `reels-qa` declares `context: fork`, so it never sees the editing plan |
+
+So a new framing (ep11's landscape two-shot) is a new reference file, not a new skill: the workflow I care about —
+cut → approve → Korean → English from the Korean → approve → optional extras → independent QA → 4K — stays in one place.
+Both skills use the shared SKILL.md format, so they also run in Codex (`~/.agents/skills/`).
 
 ---
 
@@ -150,5 +173,5 @@ voice chain. It reaches roughly 85–90 % of the CapCut result, which is why it 
 ## 📄 License · credits
 
 - Code and docs: [MIT](LICENSE). Third-party assets are downloaded by `fetch_assets.sh`, not redistributed — see [NOTICE](NOTICE).
-- `examples/` and `ref/gt9.json` contain transcripts of my own published episodes; reuse them for testing only.
+- `examples/` and `eval/gt9.json` contain transcripts of my own published episodes; reuse them for testing only.
 - An independent personal project, not affiliated with Anthropic, Instagram or CapCut.

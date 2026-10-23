@@ -139,6 +139,13 @@ islands = [[kept[0]]] if kept else []
 pause_run = {}
 for p_, w in zip(kept, kept[1:]):
     crosses_drop = w['i'] != p_['i'] + 1
+    # plan "cut": [[t0, t1]] = remove this source span even if it is not measured as quiet (room noise, breath;
+    # ep11 QA: 0.8 s of dead air between two speakers). Treated like a verified pause -> normal pads.
+    fc = next((c for c in P.get('cut', []) if p_['end'] - 0.05 <= c[0] and c[1] <= w['start'] + 0.05), None)
+    if fc and not crosses_drop:
+        pause_run[w['i']] = (fc[0], fc[1])
+        islands.append([w])
+        continue
     if not crosses_drop:
         rs = quiet_runs(p_['end'] - 0.08, w['start'] + 0.08)
         best = max(rs, key=lambda r: r[1] - r[0]) if rs else None
@@ -353,6 +360,9 @@ caps.sort(key=lambda c: c['out_start'])
 # hook suppression: captions inside the hook window are represented by the hook title
 cc = []
 for c in caps:
+    if H.get('keep_captions'):   # hook title sits clear of the caption rows (landscape two-shot, ep11): keep both
+        cc.append(c)
+        continue
     if c['out_end'] <= hook_end + 0.25:
         continue
     if c['out_start'] < hook_end:
@@ -706,6 +716,8 @@ for x, y in zip(cards, cards[1:]):
         warn.append(f"cards '{x['title']}' and '{y['title']}' only {y['out_start'] - x['out_end']:.1f} s apart (want >= 8 s)")
 
 style = json.load(open(a.style)) if a.style else {}
+for k_, v_ in P.get('style', {}).items():   # plan-level overrides (header text, layout) win over --style
+    style[k_] = dict(style.get(k_, {}), **v_) if isinstance(v_, dict) else v_
 edl = dict(source=a.src_name or WJ.get('source'), fps=FPS_OUT, out_frames=fr, out_duration=round(OUT_DUR, 4),
            segments=[dict(src_start=s['src_start'], src_end=s['src_end'], speed=s['speed'], frames=s['frames'],
                           out_start=s['out_start'], out_end=s['out_end'], zoom=s['zoom'], face=s['face'],
@@ -726,7 +738,10 @@ edl = dict(source=a.src_name or WJ.get('source'), fps=FPS_OUT, out_frames=fr, ou
            grade=P.get('grade', {}), retouch=P.get('retouch', {}),
            audio=dict(target_lufs=P.get('audio', {}).get('target_lufs', -11.0), true_peak=-1.5, fade_ms=12,
                       mode=P.get('audio', {}).get('mode', 'voice_chain')),
-           style=style, warnings=warn)
+           style=style, warnings=warn,
+           # 'landscape' = 16:9 two-shot laid out on a 3840x2160 canvas; rotate 'cclock' turns the finished frame
+           # 90 deg so a landscape edit fills a vertical 9:16 screen (viewer tilts the phone; ep11)
+           orientation=P.get('orientation', 'portrait'), rotate=P.get('rotate'), mosaic=P.get('mosaic'))
 sp = np.array([s['speed'] for s in segs]); wd = np.array([s['src_end'] - s['src_start'] for s in segs])
 if OUT_DUR > TARGET * 1.05:
     form_viol.append(f"output {OUT_DUR:.1f} s > {TARGET * 1.05:.1f} s (target {TARGET} s): drop ~{(OUT_DUR - TARGET) * 1.3:.0f} s of source")

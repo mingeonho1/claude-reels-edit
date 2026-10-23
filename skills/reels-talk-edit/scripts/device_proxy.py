@@ -16,6 +16,7 @@ ap = argparse.ArgumentParser()
 ap.add_argument('mov'); ap.add_argument('out')
 ap.add_argument('--budget', type=float, default=140); ap.add_argument('--chunk', type=float, default=100)
 a = ap.parse_args()
+a.out = os.path.abspath(a.out)  # concat lists resolve relative paths against the list's own folder
 os.makedirs(a.out, exist_ok=True)
 st_path = os.path.join(a.out, 'proxy_state.json')
 dur = float(json.loads(subprocess.run([FFPROBE, '-v', 'error', '-show_entries', 'format=duration', '-of', 'json', a.mov],
@@ -37,7 +38,8 @@ for k, (c0, c1) in enumerate(chunks):
         break
     s = time.time()
     subprocess.run([FFMPEG, '-v', 'error', '-y', '-threads', '4', '-ss', f'{c0:.3f}', '-t', f'{c1 - c0:.3f}', '-i', a.mov,
-                    '-vf', 'scale=720:1280:flags=bicubic', '-r', '30', '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '18',
+                    # portrait -> 720x1280, landscape (two-shot, ep11) -> 1280x720; never stretch
+                    '-vf', "scale='if(gt(iw,ih),1280,720)':'if(gt(iw,ih),720,1280)':flags=bicubic", '-r', '30', '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '18',
                     '-pix_fmt', 'yuv420p', '-an', os.path.join(a.out, f'part{k:02d}.mp4')], check=True)
     st['rate'] = (c1 - c0) / (time.time() - s)
     st['done'].append(k)

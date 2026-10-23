@@ -1,0 +1,716 @@
+{
+ "stage": "final",
+ "orientation": "landscape",
+ "rotate": "clock",
+ "start_word": 1.6,
+ "end_word": 214.4,
+ "speed": {
+  "host": 1.27,
+  "guest": 1.22,
+  "mixed": 1.25
+ },
+ "speed_cap": 1.32,
+ "turn_gap": 0.2,
+ "pause_cut": 0.32,
+ "pad_in": 0.09,
+ "pad_out": 0.12,
+ "target_out": 100.0,
+ "hook": {
+  "text": "AI 빈부격차",
+  "until_t": 8.67,
+  "min_dur": 2.4,
+  "max_dur": 3.4,
+  "keep_captions": true,
+  "intro": false
+ },
+ "drop": [
+  {
+   "t": [
+    5.0,
+    6.85
+   ],
+   "why": "turn-opening 근데 + pause"
+  },
+  {
+   "t": [
+    14.45,
+    17.95
+   ],
+   "why": "host defines 추론 레벨 before the guest asks; the definition comes later (119 s)"
+  },
+  {
+   "t": [
+    22.79,
+    24.85
+   ],
+   "why": "그러니까 쉽게 설명하면 - restart"
+  },
+  {
+   "t": [
+    43.68,
+    45.2
+   ],
+   "why": "guest 아... + pause"
+  },
+  {
+   "t": [
+    51.2,
+    51.405
+   ],
+   "why": "filler 이제"
+  },
+  {
+   "t": [
+    57.9,
+    58.85
+   ],
+   "why": "그게 안되지 - said twice, keep the second"
+  },
+  {
+   "t": [
+    69.8,
+    70.6
+   ],
+   "why": "뭐 그런가? - filler tag"
+  },
+  {
+   "t": [
+    83.5,
+    90.0
+   ],
+   "why": "side question: China makes its own chips (the article line answers it)"
+  },
+  {
+   "t": [
+    113.5,
+    118.6
+   ],
+   "why": "training vs inference aside"
+  },
+  {
+   "t": [
+    132.3,
+    145.3
+   ],
+   "why": "operating-cost branch (운영비, 동시 처리) - second thread, cut for length"
+  },
+  {
+   "t": [
+    158.3,
+    206.1
+   ],
+   "why": "pricing/competition loop and recap - repeats the point; jump to the closing line"
+  },
+  {
+   "t": [
+    77.08,
+    77.84
+   ],
+   "why": "근데 이제 - glue"
+  },
+  {
+   "t": [
+    129.1,
+    129.74
+   ],
+   "why": "그래서 - glue"
+  },
+  {
+   "t": [
+    106.3,
+    106.75
+   ],
+   "why": "그치 alone between two cuts (QA r1: double jump cut)"
+  }
+ ],
+ "captions": [
+  {
+   "t": [
+    1.75,
+    3.66
+   ],
+   "speaker": "guest",
+   "text": "아 또 한도 도달했네",
+   "en": "Ugh, I hit the limit again"
+  },
+  {
+   "t": [
+    3.67,
+    4.78
+   ],
+   "speaker": "guest",
+   "text": "6시간 또 기다려야 돼",
+   "en": "6 more hours to wait"
+  },
+  {
+   "t": [
+    6.93,
+    8.33
+   ],
+   "speaker": "host",
+   "text": "교사도 AI 많이 써?",
+   "en": "Do teachers use AI a lot?"
+  },
+  {
+   "speaker": "guest",
+   "text": "쓰지",
+   "en": "Sure do",
+   "w": [
+    14,
+    14
+   ],
+   "src": [
+    8.84,
+    9.3
+   ]
+  },
+  {
+   "t": [
+    10.39,
+    12.77
+   ],
+   "speaker": "host",
+   "text": "GPT나 클로드, 제미나이 쓸 때",
+   "en": "When you use GPT, Claude or Gemini,"
+  },
+  {
+   "speaker": "host",
+   "text": "추론 레벨 설정해?",
+   "en": "do you set the reasoning level?",
+   "w": [
+    21,
+    23
+   ],
+   "src": [
+    13.37,
+    14.43
+   ]
+  },
+  {
+   "t": [
+    18.03,
+    19.25
+   ],
+   "speaker": "guest",
+   "text": "그게 뭔데?",
+   "en": "What's that?"
+  },
+  {
+   "t": [
+    20.26,
+    22.78
+   ],
+   "speaker": "host",
+   "text": "그러니까 토큰이 녹는 거야",
+   "en": "That's what makes your tokens melt away"
+  },
+  {
+   "t": [
+    24.95,
+    27.25
+   ],
+   "speaker": "host",
+   "text": "내일 학부모 상담 안내 문자",
+   "en": "Like tomorrow's parent-meeting text"
+  },
+  {
+   "t": [
+    27.26,
+    29.34
+   ],
+   "speaker": "host",
+   "text": "다듬어 달라고 할 때도",
+   "en": "even when you ask to polish it,"
+  },
+  {
+   "t": [
+    29.54,
+    31.74
+   ],
+   "speaker": "host",
+   "text": "추론 레벨을 최대로 놓고 쓰는 거야",
+   "en": "you run it at max reasoning"
+  },
+  {
+   "t": [
+    32.06,
+    33.17
+   ],
+   "speaker": "guest",
+   "text": "좋은 거 쓰면 좋은 거 아니야?",
+   "en": "Isn't better just better?"
+  },
+  {
+   "t": [
+    34.04,
+    34.7
+   ],
+   "speaker": "host",
+   "text": "아니지",
+   "en": "Nope"
+  },
+  {
+   "t": [
+    34.76,
+    36.22
+   ],
+   "speaker": "host",
+   "text": "문자 세 줄 다듬는데",
+   "en": "To polish a three-line text,"
+  },
+  {
+   "t": [
+    36.32,
+    38.92
+   ],
+   "speaker": "host",
+   "text": "AI는 속으로 몇 페이지씩 고민해",
+   "en": "the AI thinks for pages in its head"
+  },
+  {
+   "t": [
+    39.16,
+    40.84
+   ],
+   "speaker": "host",
+   "text": "그게 다 토큰이고",
+   "en": "That's all tokens"
+  },
+  {
+   "t": [
+    41.23,
+    43.68
+   ],
+   "speaker": "host",
+   "text": "네 한도에서 다 빠지는 거야",
+   "en": "and it all comes out of your limit"
+  },
+  {
+   "t": [
+    45.45,
+    47.67
+   ],
+   "speaker": "host",
+   "text": "문자 다듬기는 추론을 낮게",
+   "en": "Polishing a text: low reasoning"
+  },
+  {
+   "t": [
+    47.81,
+    49.24
+   ],
+   "speaker": "host",
+   "text": "학기 수업 계획서처럼",
+   "en": "Something like a semester lesson plan"
+  },
+  {
+   "t": [
+    49.25,
+    51.13
+   ],
+   "speaker": "host",
+   "text": "머리 써야 하는 건 높게",
+   "en": "that takes real thinking: high"
+  },
+  {
+   "t": [
+    51.41,
+    54.13
+   ],
+   "speaker": "host",
+   "text": "이것만 해도 훨씬 오래 써",
+   "en": "That alone makes it last way longer"
+  },
+  {
+   "t": [
+    54.73,
+    56.08
+   ],
+   "speaker": "guest",
+   "text": "그럼 회사가 한도를",
+   "en": "Then the company could just"
+  },
+  {
+   "t": [
+    56.09,
+    57.11
+   ],
+   "speaker": "guest",
+   "text": "넉넉하게 주면 되잖아",
+   "en": "give a bigger limit, right?"
+  },
+  {
+   "t": [
+    59.24,
+    60.38
+   ],
+   "speaker": "host",
+   "text": "그게 안 되니까 문제지",
+   "en": "That's exactly the problem"
+  },
+  {
+   "t": [
+    61.08,
+    63.5
+   ],
+   "speaker": "host",
+   "text": "AI 돌릴 칩이 전 세계적으로 모자라",
+   "en": "There aren't enough AI chips worldwide"
+  },
+  {
+   "t": [
+    64.04,
+    66.05
+   ],
+   "speaker": "guest",
+   "text": "아 그래서 그 뉴스가 나온 건가?",
+   "en": "Oh, is that why that news came out?"
+  },
+  {
+   "t": [
+    66.24,
+    68.22
+   ],
+   "speaker": "guest",
+   "text": "중국이 엔비디아 칩을",
+   "en": "China buying Nvidia chips"
+  },
+  {
+   "t": [
+    68.36,
+    69.76
+   ],
+   "speaker": "guest",
+   "text": "다시 살 수도 있다는?",
+   "en": "again, maybe?"
+  },
+  {
+   "t": [
+    71.16,
+    72.63
+   ],
+   "speaker": "guest",
+   "text": "그럼 우리가 돈 내고",
+   "en": "So the AI we pay"
+  },
+  {
+   "t": [
+    72.64,
+    74.14
+   ],
+   "speaker": "guest",
+   "text": "쓰는 AI도 더 싸지나?",
+   "en": "to use gets cheaper too?"
+  },
+  {
+   "t": [
+    75.4,
+    77.06
+   ],
+   "speaker": "host",
+   "text": "바로 싸진다곤 못 하지",
+   "en": "Can't say it gets cheaper right away"
+  },
+  {
+   "t": [
+    77.88,
+    79.06
+   ],
+   "speaker": "host",
+   "text": "개발자가 보는 포인트는",
+   "en": "What a developer looks at is"
+  },
+  {
+   "t": [
+    79.4,
+    80.95
+   ],
+   "speaker": "host",
+   "text": "같은 돈을 내고",
+   "en": "for the same money,"
+  },
+  {
+   "t": [
+    80.96,
+    83.18
+   ],
+   "speaker": "host",
+   "text": "AI를 얼마나 더 쓸 수 있냐야",
+   "en": "how much more AI you get"
+  },
+  {
+   "t": [
+    90.52,
+    93.79
+   ],
+   "speaker": "host",
+   "text": "기사에선 AI 돌리는 칩이",
+   "en": "The article says chips that run AI"
+  },
+  {
+   "t": [
+    93.8,
+    95.26
+   ],
+   "speaker": "host",
+   "text": "수요를 못 따라가서",
+   "en": "can't keep up with demand,"
+  },
+  {
+   "t": [
+    96.08,
+    98.98
+   ],
+   "speaker": "host",
+   "text": "일부 엔비디아 칩도 허용할지 고민 중",
+   "en": "so China's weighing allowing some Nvidia chips"
+  },
+  {
+   "t": [
+    99.22,
+    100.8
+   ],
+   "speaker": "host",
+   "text": "확정은 아니야",
+   "en": "It's not final"
+  },
+  {
+   "t": [
+    101.55,
+    103.5
+   ],
+   "speaker": "guest",
+   "text": "AI 만들 때만",
+   "en": "So it's not just building AI"
+  },
+  {
+   "t": [
+    103.82,
+    105.72
+   ],
+   "speaker": "guest",
+   "text": "칩이 필요한 게 아니구나",
+   "en": "that needs chips"
+  },
+  {
+   "t": [
+    107.46,
+    110.66
+   ],
+   "speaker": "host",
+   "text": "예를 들어 이 문서 요약해줘 하면",
+   "en": "Say you ask it to summarize a doc"
+  },
+  {
+   "t": [
+    110.94,
+    113.2
+   ],
+   "speaker": "host",
+   "text": "답 만들 때도 계산이 필요하잖아",
+   "en": "making the answer takes compute too"
+  },
+  {
+   "t": [
+    119.04,
+    120.63
+   ],
+   "speaker": "host",
+   "text": "아까 말한 추론 레벨은",
+   "en": "The reasoning level I mentioned"
+  },
+  {
+   "t": [
+    120.64,
+    123.45
+   ],
+   "speaker": "host",
+   "text": "답을 얼마나 깊게 생각하느냐야",
+   "en": "is how deeply it thinks about the answer"
+  },
+  {
+   "t": [
+    123.76,
+    127.54
+   ],
+   "speaker": "guest",
+   "text": "깊게 생각할수록 칩도 더 들어?",
+   "en": "So deeper thinking needs more chips?"
+  },
+  {
+   "t": [
+    127.56,
+    128.26
+   ],
+   "speaker": "host",
+   "text": "그치 그치",
+   "en": "Yep, yep"
+  },
+  {
+   "t": [
+    129.75,
+    132.04
+   ],
+   "speaker": "host",
+   "text": "추론 수요가 늘수록 칩이 더 모자라",
+   "en": "The more reasoning demand, the scarcer chips get"
+  },
+  {
+   "t": [
+    145.46,
+    149.04
+   ],
+   "speaker": "guest",
+   "text": "그럼 아까 내 제미나이 한도 터진 것도",
+   "en": "So my Gemini limit running out earlier"
+  },
+  {
+   "t": [
+    149.26,
+    150.9
+   ],
+   "speaker": "guest",
+   "text": "결국 칩 문제인 거네?",
+   "en": "was a chip problem after all?"
+  },
+  {
+   "t": [
+    151.26,
+    152.36
+   ],
+   "speaker": "host",
+   "text": "일부는 맞아",
+   "en": "That's partly right"
+  },
+  {
+   "t": [
+    152.86,
+    154.2
+   ],
+   "speaker": "host",
+   "text": "요금 정책도 있지만",
+   "en": "There's pricing policy too, but"
+  },
+  {
+   "t": [
+    154.26,
+    155.12
+   ],
+   "speaker": "host",
+   "text": "칩이 더 많으면",
+   "en": "with more chips,"
+  },
+  {
+   "t": [
+    155.26,
+    157.88
+   ],
+   "speaker": "host",
+   "text": "더 많은 요청을 처리할 수 있어",
+   "en": "they can handle more requests"
+  },
+  {
+   "t": [
+    206.27,
+    207.78
+   ],
+   "speaker": "host",
+   "text": "AI를 똑똑하게 쓰는 것만큼",
+   "en": "As much as using AI smartly,"
+  },
+  {
+   "t": [
+    208.55,
+    211.13
+   ],
+   "speaker": "host",
+   "text": "부담 없이 계속 쓰는 것도 중요해",
+   "en": "using it affordably, for longer, matters too"
+  },
+  {
+   "t": [
+    211.63,
+    214.31
+   ],
+   "speaker": "host",
+   "text": "일단 추론 레벨부터 낮춰",
+   "en": "So start by lowering your reasoning level"
+  }
+ ],
+ "modules": {
+  "header": true,
+  "hook": true,
+  "character": false,
+  "zoom": false,
+  "cards": false
+ },
+ "retouch": {
+  "off": true
+ },
+ "grade": {
+  "mode": "none",
+  "sharpen": false
+ },
+ "audio": {
+  "mode": "passthrough",
+  "target_lufs": -10.5,
+  "host_gain_db": 0.0
+ },
+ "style": {
+  "header": {
+   "line1": "01년생 AI 3년차 개발자와 중등 특수교사",
+   "line2": "저품격 힐링 토크쇼"
+  },
+  "hook": {
+   "cx": 1180
+  }
+ },
+ "names": {
+  "host": "건호",
+  "guest": "친구"
+ },
+ "retime": [
+  {
+   "i": 14,
+   "src": [
+    8.84,
+    9.3
+   ]
+  },
+  {
+   "i": 241,
+   "src": [
+    122.28,
+    122.98
+   ]
+  },
+  {
+   "i": 86,
+   "src": [
+    42.84,
+    43.56
+   ]
+  }
+ ],
+ "cut": [
+  [
+   9.3,
+   10.36
+  ],
+  [
+   19.47,
+   20.3
+  ]
+ ],
+ "mosaic": {
+  "track": "guest_face.npz",
+  "block": 0.1,
+  "blend": 0.9,
+  "soften": 0.45,
+  "feather": 0.3,
+  "pad": [
+   0.12,
+   0.1
+  ]
+ }
+}

@@ -119,13 +119,20 @@ def retouch_assets(face, R, W, H, mode, outdir, key):
 def cmd_prepare(a):
     E = load(a.edl)
     H = a.height
-    W = int(round(H * 9 / 16 / 2)) * 2
-    s = H / 3840.0
+    land = E.get('orientation', 'portrait') == 'landscape'
+    if land:   # --height = frame height: 720 proxy / 2160 master -> 1280x720 / 3840x2160 canvas
+        W = int(round(H * 16 / 9 / 2)) * 2
+        s = H / 2160.0
+    else:
+        W = int(round(H * 9 / 16 / 2)) * 2
+        s = H / 3840.0
     D = os.path.abspath(a.out)
     AD = os.path.join(D, 'assets')
     os.makedirs(AD, exist_ok=True)
-    st = OV.merged_style(E.get('style'))
-    man = dict(W=W, H=H, s=s, mode=a.mode, fps=FPS, edl=os.path.abspath(a.edl), input=a.input)
+    st = OV.merged_style(E.get('style'), base=OV.LANDSCAPE_STYLE if land else None)
+    rot = E.get('rotate') if a.mode == 'final' or a.rotate else None
+    man = dict(W=W, H=H, s=s, mode=a.mode, fps=FPS, edl=os.path.abspath(a.edl), input=a.input,
+               orientation='landscape' if land else 'portrait', rotate=rot)
     # colour LUT
     # grade modes: 'none' (input already corrected in CapCut -> untouched), 'his_look' (fitted to his CapCut
     # export: assets/his_look.cube, raw iPhone HLG input), 'param' (make_lut parametric look)
@@ -191,6 +198,15 @@ def cmd_prepare(a):
     R = dict(smooth=0.60, slim=0.0, head_shrink=0.035, bilateral_s=4.0, bilateral_r=0.08, lift=0.14, lift_off=0.025, vshift=-0.008)
     R.update(E.get('retouch', {}))
     man['retouch'] = R
+    # soft face mosaic for an on-camera guest (two-shot takes; user 2026-10-23 '은은하게 보일듯말듯')
+    MZ = E.get('mosaic')
+    if MZ and L.get('mosaic', True):
+        tp = MZ['track'] if os.path.isabs(MZ['track']) else os.path.join(os.path.dirname(os.path.abspath(a.edl)), MZ['track'])
+        shutil.copy(tp, os.path.join(AD, 'mosaic_track.npz'))
+        man['mosaic'] = dict(track=os.path.join(AD, 'mosaic_track.npz'), block=MZ.get('block', 0.10), blend=MZ.get('blend', 0.9),
+                             soften=MZ.get('soften', 0.45), feather=MZ.get('feather', 0.30), pad=MZ.get('pad', [0.12, 0.10]))
+    else:
+        man['mosaic'] = None
     rt = {}
     for sg in segs:
         if not sg.get('face') or R.get('off'):
@@ -253,9 +269,8 @@ def piece_graph(man, p, threads):
     fl = []
     sp = p['speed']
     dur_src = N / FPS * sp + 0.6
-    ra_ = man['retouch_assets'].get(p.get('rt')) if p.get('rt') else None
-    if ra_ and ra_.get('hwarp'):
-        # stage A (speed + scale) and the bilinear head warp run before this graph; frames arrive on stdin
+    if needs_pipe(man, p):
+        # stage A (speed + scale), then the bilinear head warp and/or face mosaic in python; frames arrive on stdin
         inputs.append(['-f', 'rawvideo', '-pix_fmt', PF, '-s', f'{W}x{H}', '-r', str(FPS), '-i', 'pipe:0'])
         fl.append("[0:v]setpts=PTS-STARTPTS")
     else:
@@ -385,8 +400,9 @@ def piece_graph(man, p, threads):
         # small running timecode (output seconds) in the top-left so the user can say "37초 컷이 어색해"
         fnt = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'assets', 'Pretendard-ExtraBold.otf')
         fx += (f"drawtext=fontfile='{fnt}':text='%{{eif\\:t+{T0:.4f}\\:d\\:1}}.%{{eif\\:mod((t+{T0:.4f})*10\\,10)\\:d\\:1}}s':"
-               f"x=16:y=16:fontsize={int(H * 0.022)}:fontcolor=white:box=1:boxcolor=black@0.45:boxborderw=6,")
-    fl.append(f"[{last}]{fx}tpad=stop_mode=clone:stop=6,trim=end_frame={N},setpts=PTS-STARTPTS,format={PF}[vout]")
+               f"x=16:y=16:fontsize={int(max(W, H) * 0.022)}:fontcolor=white:box=1:boxcolor=black@0.45:boxborderw=6,")
+    rot = {'cclock': 'transpose=cclock,', 'clock': 'transpose=clock,'}.get(man.get('rotate') or '', '')
+    fl.append(f"[{last}]{fx}tpad=stop_mode=clone:stop=6,trim=end_frame={N},setpts=PTS-STARTPTS,{rot}format={PF}[vout]")
     return inputs, ';'.join(fl)
 
 
@@ -409,15 +425,24 @@ def stage_a(man, p, src, threads, nframes):
             '-i', src, '-vf', vf, '-frames:v', str(nframes + 6), '-pix_fmt', PF, '-f', 'rawvideo', 'pipe:1']
 
 
+def needs_pipe(man, p):
+    ra = man['retouch_assets'].get(p.get('rt')) if p.get('rt') else None
+    return bool((ra and ra.get('hwarp')) or man.get('mosaic'))
+
+
 def warp_cmd(man, p):
-    ra = man['retouch_assets'][p['rt']]
-    return [sys.executable, os.path.abspath(__file__), '_warp', '--map', ra['hwarp'], '--w', str(man['W']), '--h', str(man['H']),
-            '--bits', '10' if man['mode'] == 'final' else '8', '--rect', f"{ra['hx']},{ra['hy']},{ra['hw']},{ra['hh']}"]
+    ra = man['retouch_assets'].get(p.get('rt')) if p.get('rt') else None
+    cmd = [sys.executable, os.path.abspath(__file__), '_warp', '--w', str(man['W']), '--h', str(man['H']),
+           '--bits', '10' if man['mode'] == 'final' else '8']
+    if ra and ra.get('hwarp'):
+        cmd += ['--map', ra['hwarp'], '--rect', f"{ra['hx']},{ra['hy']},{ra['hw']},{ra['hh']}"]
+    if man.get('mosaic'):
+        cmd += ['--mosaic', json.dumps(man['mosaic']), '--src0', f"{p['src']:.4f}", '--speed', str(p['speed'])]
+    return cmd
 
 
 def run_pipeline(man, p, src, threads, cmd):
-    ra = man['retouch_assets'].get(p.get('rt')) if p.get('rt') else None
-    if not (ra and ra.get('hwarp')):
+    if not needs_pipe(man, p):
         return sh(cmd)
     a_ = subprocess.Popen(stage_a(man, p, src, threads, p['n']), stdout=subprocess.PIPE)
     w_ = subprocess.Popen(warp_cmd(man, p), stdin=a_.stdout, stdout=subprocess.PIPE)
@@ -429,17 +454,37 @@ def run_pipeline(man, p, src, threads, cmd):
         raise RuntimeError('piece pipeline failed: ' + ' '.join(cmd[:6]))
 
 
-def cmd_warp(a):
+def _mosaic_plane(P_, x0, y0, x1, y1, blk, sig, mask, blend):
     import cv2
-    M = np.load(a.map)
-    x0, y0, w, h = [int(v) for v in a.rect.split(',')]
+    roi = P_[y0:y1, x0:x1].astype(np.float32)
+    h, w = roi.shape
+    sw, sh_ = max(1, int(round(w / blk))), max(1, int(round(h / blk)))
+    up = cv2.resize(cv2.resize(roi, (sw, sh_), interpolation=cv2.INTER_AREA), (w, h), interpolation=cv2.INTER_NEAREST)
+    if sig > 0.3:
+        up = cv2.GaussianBlur(up, (0, 0), sig)          # soften the block edges -> '보일듯말듯', not a hard grid
+    a_ = mask * blend
+    P_[y0:y1, x0:x1] = np.clip(roi * (1 - a_) + up * a_, 0, np.iinfo(P_.dtype).max).astype(P_.dtype)
+
+
+def cmd_warp(a):
+    """raw yuv420 frames stdin -> stdout: optional bilinear head warp (--map) and/or soft face mosaic (--mosaic)"""
+    import cv2
     W, H = a.w, a.h
     dt = np.uint16 if a.bits > 8 else np.uint8
     bpp = 2 if a.bits > 8 else 1
     ys, cs = W * H, (W // 2) * (H // 2)
     fsz = (ys + 2 * cs) * bpp
-    yx, yy, cx, cy = M['yx'], M['yy'], M['cx'], M['cy']
+    if a.map:
+        M = np.load(a.map)
+        x0, y0, w, h = [int(v) for v in a.rect.split(',')]
+        yx, yy, cx, cy = M['yx'], M['yy'], M['cx'], M['cy']
+    MZ = json.loads(a.mosaic) if a.mosaic else None
+    if MZ:
+        TR = np.load(MZ['track'])
+        tt, bb = TR['t'], TR['box']
+        mask_cache = {}
     inp, outp = sys.stdin.buffer, sys.stdout.buffer
+    j = 0
     while True:
         buf = inp.read(fsz)
         if len(buf) < fsz:
@@ -448,11 +493,35 @@ def cmd_warp(a):
         Y = fr[:ys].reshape(H, W)
         U = fr[ys:ys + cs].reshape(H // 2, W // 2)
         V = fr[ys + cs:].reshape(H // 2, W // 2)
-        Y[y0:y0 + h, x0:x0 + w] = cv2.remap(np.ascontiguousarray(Y[y0:y0 + h, x0:x0 + w]), yx, yy, cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE)
-        c0, c1, cw, ch = x0 // 2, y0 // 2, w // 2, h // 2
-        for P_ in (U, V):
-            P_[c1:c1 + ch, c0:c0 + cw] = cv2.remap(np.ascontiguousarray(P_[c1:c1 + ch, c0:c0 + cw]), cx[:ch, :cw], cy[:ch, :cw], cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE)
+        if a.map:
+            Y[y0:y0 + h, x0:x0 + w] = cv2.remap(np.ascontiguousarray(Y[y0:y0 + h, x0:x0 + w]), yx, yy, cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE)
+            c0, c1, cw, ch = x0 // 2, y0 // 2, w // 2, h // 2
+            for P_ in (U, V):
+                P_[c1:c1 + ch, c0:c0 + cw] = cv2.remap(np.ascontiguousarray(P_[c1:c1 + ch, c0:c0 + cw]), cx[:ch, :cw], cy[:ch, :cw], cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE)
+        if MZ:
+            t = a.src0 + j / FPS * a.speed
+            bx = [float(np.interp(t, tt, bb[:, k])) for k in range(4)]
+            px, py = MZ['pad']
+            fx0, fy0 = (bx[0] - px * bx[2]) * W, (bx[1] - py * bx[3]) * H
+            fw, fh = bx[2] * (1 + 2 * px) * W, bx[3] * (1 + 2 * py) * H
+            X0, Y0 = max(0, int(fx0) // 2 * 2), max(0, int(fy0) // 2 * 2)
+            X1, Y1 = min(W, int(fx0 + fw + 1) // 2 * 2), min(H, int(fy0 + fh + 1) // 2 * 2)
+            if X1 - X0 >= 8 and Y1 - Y0 >= 8:
+                key = (X1 - X0, Y1 - Y0)
+                if key not in mask_cache:
+                    hh, ww = key[1], key[0]
+                    gy, gx = np.mgrid[0:hh, 0:ww].astype(np.float32)
+                    r = np.sqrt(((gx + 0.5) / ww * 2 - 1) ** 2 + ((gy + 0.5) / hh * 2 - 1) ** 2)  # ellipse, 1 at the rim
+                    f = MZ['feather']
+                    m = np.clip((1 - r) / f, 0, 1)
+                    mask_cache[key] = (m, cv2.resize(m, (ww // 2, hh // 2), interpolation=cv2.INTER_AREA))
+                m, mc = mask_cache[key]
+                blk = max(2.0, MZ['block'] * bx[2] * W)          # block size = fraction of the face width
+                _mosaic_plane(Y, X0, Y0, X1, Y1, blk, MZ['soften'] * blk, m, MZ['blend'])
+                for P_ in (U, V):
+                    _mosaic_plane(P_, X0 // 2, Y0 // 2, X1 // 2, Y1 // 2, blk / 2, MZ['soften'] * blk / 2, mc, MZ['blend'])
         outp.write(fr.tobytes())
+        j += 1
     outp.flush()
 
 
@@ -677,7 +746,7 @@ def cmd_verify(a):
     I, TP = measure(a.file)
     exp = man['out_frames']
     checks = dict(
-        resolution=(v['width'], v['height']) == (man['W'], man['H']),
+        resolution=(v['width'], v['height']) == ((man['H'], man['W']) if man.get('rotate') else (man['W'], man['H'])),
         fps=v['r_frame_rate'] == '30/1',
         frames=nf == exp,
         pix_fmt=v['pix_fmt'] == ('yuv420p10le' if man['mode'] == 'final' else 'yuv420p'),
@@ -708,6 +777,7 @@ if __name__ == '__main__':
     p = sub.add_parser('prepare'); p.add_argument('--edl', required=True); p.add_argument('--out', required=True)
     p.add_argument('--height', type=int, default=1280); p.add_argument('--mode', default='proxy', choices=['proxy', 'final'])
     p.add_argument('--max-frames', type=int, default=0); p.add_argument('--input', default='hlg', choices=['hlg', 'sdr'])
+    p.add_argument('--rotate', action='store_true', help='apply the EDL rotate in proxy mode too (default: final only)')
     p = sub.add_parser('run'); p.add_argument('--out', required=True); p.add_argument('--src', required=True)
     p.add_argument('--budget', type=float, default=0); p.add_argument('--threads', type=int, default=2)
     p = sub.add_parser('audio'); p.add_argument('--out', required=True); p.add_argument('--audio', required=True)
@@ -716,8 +786,9 @@ if __name__ == '__main__':
     p = sub.add_parser('still'); p.add_argument('--out', required=True); p.add_argument('--src', required=True)
     p.add_argument('--t', type=float, required=True); p.add_argument('--png', required=True)
     p = sub.add_parser('status'); p.add_argument('--out', required=True)
-    p = sub.add_parser('_warp'); p.add_argument('--map', required=True); p.add_argument('--w', type=int, required=True)
-    p.add_argument('--h', type=int, required=True); p.add_argument('--bits', type=int, default=8); p.add_argument('--rect', required=True)
+    p = sub.add_parser('_warp'); p.add_argument('--map'); p.add_argument('--w', type=int, required=True)
+    p.add_argument('--h', type=int, required=True); p.add_argument('--bits', type=int, default=8); p.add_argument('--rect')
+    p.add_argument('--mosaic'); p.add_argument('--src0', type=float, default=0.0); p.add_argument('--speed', type=float, default=1.0)
     a = ap.parse_args()
     dict(prepare=cmd_prepare, run=cmd_run, audio=cmd_audio, finish=cmd_finish, verify=cmd_verify, still=cmd_still,
          status=cmd_status, _warp=cmd_warp)[a.cmd](a)

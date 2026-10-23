@@ -1,0 +1,162 @@
+{
+ "verdict": "fix",
+ "findings": [
+  {
+   "t": 5.06,
+   "cat": "cut",
+   "sev": "major",
+   "evidence": "Dead air at the guest-to-host turn. Voicing analysis of out.wav: guest '쓰지~' is voiced 4.61-4.97 (f0 ~190), a short host sound 5.00-5.06, then near-silence/noise (-13 to -21 dB, unvoiced) until host '너' starts at 5.87. That is a 0.8 s gap, and it straddles the 5.73 cut. Also seg2 src_start 10.2 < seg1 src_end 10.2897, so 0.09 s of source is played twice.",
+   "fix": "seg1 src_end 10.2897 -> 9.55 and seg2 src_start 10.2 -> 10.30 (shrinks the gap to about 0.16 s and removes the duplicated source). Everything after it moves about 0.6 s earlier."
+  },
+  {
+   "t": 65.53,
+   "cat": "cut",
+   "sev": "major",
+   "evidence": "Two jump cuts 0.37 s (11 frames) apart at 65.53 and 65.90. seg16 is only '그치'. The guest's arm teleports twice (hand on glass, then raised, then on head), which reads as a stutter. Frames: cuts2.jpg, m6553.jpg.",
+   "fix": "Merge seg16 and seg17 into one continuous segment, src 106.36-110.6953 (it keeps the 0.14 s src gap 106.83-106.97 and adds 0.11 s out). That removes the 65.90 cut. Caption '그치' stays at 65.53, ends at 65.95."
+  },
+  {
+   "t": 4.15,
+   "cat": "caption_late",
+   "sev": "minor",
+   "evidence": "Caption '쓰지' (guest) appears at 4.15, but the guest's voice only starts at 4.61. The host's '써?' ends at 4.13. The caption is 0.46 s early. The automatic pass called this a blocker ('heard 많이 써?'), but that is whisper misalignment, and zipformer puts 많이 at 3.89 and 써 at 4.09.",
+   "fix": "Caption 3 at 4.58-5.05 (before applying the F1 shift). Or keep caption 2 on until 4.55."
+  },
+  {
+   "t": 2.97,
+   "cat": "layout",
+   "sev": "minor",
+   "evidence": "From 2.97 to 3.40 the host has turned left (face x0=647), and the last glyph '차' of the hook 'AI 빈부격차' covers his nose and cheek by about 30 px (frame h32.jpg).",
+   "fix": "End the hook at 2.97 (at the cut), or shift the hook left by 50 px or more (x 206 -> 150)."
+  },
+  {
+   "t": 7.83,
+   "cat": "caption_late",
+   "sev": "minor",
+   "evidence": "'추론 레벨 설정해?' appears at 7.83 while the audio is silent. Zipformer has 추 at 8.22.",
+   "fix": "Start caption 5 at 8.18, and keep caption 4 until 8.18."
+  },
+  {
+   "t": 10.17,
+   "cat": "cut",
+   "sev": "minor",
+   "evidence": "After the guest's '그게 뭔데?' (ends about 10.15) the host's '너가' starts about 10.85. That is a 0.7 s pause inside seg3. It works as a reaction beat but is slightly slow.",
+   "fix": "Optional: cut src 19.50-20.05 out of seg3 (about -0.43 s out). This adds one more jump cut, so only do it if rhythm matters more."
+  },
+  {
+   "t": 73.65,
+   "cat": "cut",
+   "sev": "minor",
+   "evidence": "The host trails off with a quiet '거예요' (about 73.29-73.65). The guest's '그러면' starts at 74.31, so the turn gap is about 0.65 s at the 74.23 cut.",
+   "fix": "seg19 src_end 123.4863 -> 123.10 (-0.3 s out)."
+  },
+  {
+   "t": 27.7,
+   "cat": "audio",
+   "sev": "minor",
+   "evidence": "Audio stays at -8 dB right up to the cut, then drops to -31 dB. seg4 src_end 43.7347 includes the onset of the guest's '아...' (src 43.692), so a sustained sound is chopped.",
+   "fix": "seg4 src_end 43.7347 -> 43.68."
+  },
+  {
+   "t": 68.82,
+   "cat": "audio",
+   "sev": "minor",
+   "evidence": "A 10 ms burst at -12 dB (68.820-68.830) right before the cut, then a -38 dB fade dip and speech at 68.91. It is likely a truncated transient or tick. The automatic pass flagged a possible click.",
+   "fix": "Pull the seg17 src_end back by 1 frame (110.6953 -> 110.66), or use a 20-25 ms fade at this cut."
+  },
+  {
+   "t": 38.62,
+   "cat": "en_wrong",
+   "sev": "minor",
+   "evidence": "KR 'AI 돌릴 칩이 전 세계적으로 모자라', EN 'There aren't enough chips to run AI'. The EN drops 'worldwide'.",
+   "fix": "EN: 'There aren't enough AI chips worldwide'"
+  },
+  {
+   "t": 78.0,
+   "cat": "en_wrong",
+   "sev": "minor",
+   "evidence": "KR '추론 수요가 늘수록 칩이 더 모자라' (chips get scarcer), EN 'More reasoning demand, fewer chips' (implies the number of chips drops).",
+   "fix": "EN: 'The more reasoning demand, the scarcer chips get'"
+  },
+  {
+   "t": 10.8,
+   "cat": "en_wrong",
+   "sev": "minor",
+   "evidence": "Answering the guest's 'What's that?' with 'That's why your tokens melt away' reads as a non sequitur in English. KR '그러니까' here works as a filler meaning 'I mean'.",
+   "fix": "EN: 'It's what makes your tokens melt away'"
+  },
+  {
+   "t": 58.42,
+   "cat": "en_wrong",
+   "sev": "minor",
+   "evidence": "KR '일부 엔비디아 칩도 허용할지 고민 중' means 'weighing whether to allow some Nvidia chips'. EN 'so some Nvidia chips may be allowed' loses the 'considering' sense and hides who decides. The guest's question that named China (src words 176-187) was cut.",
+   "fix": "EN: 'so China is weighing allowing some Nvidia chips'"
+  },
+  {
+   "t": 6.53,
+   "cat": "other",
+   "sev": "minor",
+   "evidence": "The automatic 'unexpected_jump' here is a fast host hand gesture combined with the 1.27x speed-up done by frame dropping. Output frame diffs spike to 1.5-1.7x the source diffs every 4th frame (6.37 and 6.53), so there is mild judder on fast motion. This happens everywhere: every segment runs at 1.22-1.27x.",
+   "fix": "Optional: render the speed change with frame blending or minterpolate. Otherwise accept."
+  }
+ ],
+ "dismissed_auto_flags": [
+  {
+   "t": 1.54,
+   "auto": "en_number major",
+   "why": "Zipformer hears '여섯 시' and the source says '여섯 시간'. '6시간' = 'Six more hours' is correct. Whisper heard '몇'."
+  },
+  {
+   "t": 4.15,
+   "auto": "caption_mismatch blocker",
+   "why": "Whisper misaligned this. The caption text '쓰지' is right. Timing is in the minor finding above."
+  },
+  {
+   "t": 5.83,
+   "auto": "caption_early",
+   "why": "Zipformer has '너' at 5.82, so the caption is on time."
+  },
+  {
+   "t": 12.86,
+   "auto": "caption_early",
+   "why": "'니가' is at 12.88, on time."
+  },
+  {
+   "t": 21.81,
+   "auto": "caption_early",
+   "why": "'AI' is at 21.84, on time."
+  },
+  {
+   "t": 25.68,
+   "auto": "caption_early",
+   "why": "'니' is at 25.48, on time."
+  },
+  {
+   "t": 56.74,
+   "auto": "caption_early",
+   "why": "'칩이' is at 56.54, on time."
+  },
+  {
+   "t": 62.07,
+   "auto": "caption_early 1.63s",
+   "why": "Zipformer has '아' at 62.08 and 'AI' at 62.36. Whisper had stretched '아니야'."
+  },
+  {
+   "t": 74.23,
+   "auto": "caption_early",
+   "why": "'그러면' is at 74.24-74.31, on time."
+  },
+  {
+   "t": 0,
+   "auto": "en_long x3",
+   "why": "These are short natural English lines, not over-long."
+  }
+ ],
+ "checked": {
+  "lufs": -10.6,
+  "target": -10.5,
+  "true_peak_dBTP": -2.9,
+  "speaker_rows": "all 57 captions match the source speaker; navy=guest lower row, black=host upper row, checked on frames",
+  "layout": "no caption covers a face, no glyph is clipped, no tofu; header clears host face by >=15 px"
+ }
+}

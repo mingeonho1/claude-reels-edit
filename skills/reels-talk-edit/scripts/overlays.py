@@ -29,13 +29,32 @@ DEFAULT_STYLE = {
 }
 
 
-def merged_style(style):
+# 16:9 two-shot (both people on camera, ep11): canvas 3840x2160, s = H/2160. Captions centred in the lower half,
+# kept off the bottom 15 %; header/hook top-left of centre, clear of the host's head on the right. After a clockwise
+# rotation (rotate: clock) the top edge sits on the phone's right side, so the header stays above Instagram's
+# right-hand buttons. No guest character (the guest is on screen).
+LANDSCAPE_STYLE = {
+    "caption": {"cx": 1920, "host": {"top": 1330, "color": [0, 0, 0]}, "guest": {"top": 1550, "color": [37, 41, 115]},
+                "max_w": 2600},
+    "header": {"cx": 1350, "l1_top": 80, "l1_w": 1100, "l2_top": 170, "l2_w": 730},
+    "hook": {"cx": 1350, "cy": 260, "max_w": 1500},
+    "english": {"max_w": 2400},
+    "card": {"top": 260, "right_margin": 140},
+}
+
+
+def merged_style(style, base=None):
     out = json.loads(json.dumps(DEFAULT_STYLE))
-    for k, v in (style or {}).items():
-        if isinstance(v, dict) and k in out:
-            out[k].update(v)
-        else:
-            out[k] = v
+    for src in (base, style):
+        for k, v in (src or {}).items():
+            if isinstance(v, dict) and k in out:
+                for kk, vv in v.items():
+                    if isinstance(vv, dict) and isinstance(out[k].get(kk), dict):
+                        out[k][kk].update(vv)
+                    else:
+                        out[k][kk] = vv
+            else:
+                out[k] = v
     return out
 
 
@@ -187,7 +206,7 @@ def header_png(st, s, W, path):
         if tw:  # measured span of his header wins over glyph height (Latin/digits make Do Hyeon run wide)
             size *= tw * s / li.size[0]
             li, base, ht, hb = render_text_rgba(Hd[key], size, st, Hd['color'], stroke=bold * s, stroke_fill=Hd['color'])
-        x = int(round(W / 2 - li.size[0] / 2))
+        x = int(round((Hd['cx'] * s if Hd.get('cx') else W / 2) - li.size[0] / 2))
         y = int(round(top * s - ht))
         im.alpha_composite(li, (max(0, x), max(0, y)))
     y0 = int(Hd['l1_top'] * s * 0.8) // 2 * 2
@@ -205,7 +224,7 @@ def hook_assets(text, st, s, W, outdir, fps=30):
         size *= Hk['max_w'] * s / li.size[0]
         li, base, ht, hb = render_text_rgba(text, size, st, Hk['fill'], stroke=Hk['stroke'] * s, stroke_fill=Hk['stroke_fill'],
                                             shadow=(0, 6 * s, 90, 8 * s))
-    x = even(W / 2 - li.size[0] / 2)
+    x = even((Hk['cx'] * s if Hk.get('cx') else W / 2) - li.size[0] / 2)
     y = even(Hk['cy'] * s - (ht + hb) / 2)
     # fly-up animation frames: easeOutCubic offset + alpha fade, then static (last frame repeats)
     n = max(1, int(round(Hk['fly_s'] * fps)))
