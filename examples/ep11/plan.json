@@ -702,7 +702,7 @@
    20.3
   ]
  ],
- "mosaic": {
+ "mosaic_tried": {
   "track": "guest_face.npz",
   "block": 0.12,
   "blend": 0.95,

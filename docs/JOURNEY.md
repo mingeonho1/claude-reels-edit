@@ -151,13 +151,13 @@ I'd spotted in the plan. Round 2: 0 blockers. See [`examples/ep10/qa_round1_find
 
 ## 7. Case 2 — a different framing (ep11)
 
-![ep11: the clockwise-rotated upload (left) and the landscape edit (right); the guest's face is softly mosaicked in the video](img/ep11_frames.jpg)
+![ep11: the clockwise-rotated upload (left) and the landscape edit (right); the guest's face is mosaicked only in this still](img/ep11_frames.jpg)
 
 ep11 「AI 빈부격차」 broke three assumptions at once: the take is **landscape** (3840x2160), **both people are on
 camera**, and the guest is **not 정우** but a friend who teaches special education at a middle school. I also wanted
 to try a format that's common right now: post the landscape video **turned 90° clockwise** so it fills a vertical
-screen and the viewer tilts the phone to watch it. The guest is a friend, not a regular, so his face is **softly
-mosaicked** — barely there, features unreadable — and the show tagline became 저품격 ("low-class") 힐링 토크쇼.
+screen and the viewer tilts the phone to watch it. The guest is a friend, not a regular, so I first had his face **softly
+mosaicked** (it didn't survive review — see below), and the show tagline became 저품격 ("low-class") 힐링 토크쇼.
 
 What had to change, and why:
 
@@ -166,7 +166,7 @@ What had to change, and why:
 | Proxy squashed the frame | the proxy step forced 720x1280 | scale by orientation (1280x720 for landscape) — never stretch |
 | Layout was portrait-only | caption rows, header and hook were measured on a 2160x3840 frame | `orientation: landscape` = a 3840x2160 canvas with its own layout; captions centred above the bottom 15 % (after rotation that edge sits under Instagram's right-hand buttons), header/hook left of centre to clear my head |
 | Rotation | my first try (`cclock`) put the image's top on the left; the reference reel I showed has it on the right | `rotate: clock` turns each finished frame inside the render, so the 4K master comes out 2160x3840 with no extra encode |
-| Guest privacy | — | `track_guest.py` follows the guest's face; the render pixelates it (block = 12 % of face width), softens the blocks and feathers an ellipse, at every stage including previews |
+| Guest privacy | — | tried: `track_guest.py` follows the guest's face and the render pixelates it (block 10 → 12 % of face width), softens the blocks and feathers an ellipse. **Dropped** — see below |
 | Guest character | 정우's GIF makes no sense when the guest is on screen | character module off |
 | Who is speaking | diarization collapsed (617 vs 62 windows): two voices on one mic | speakers assigned from the content + my mouth motion (guest lines have low host logits), written into `words_patch.json` |
 | Hook covered the first lines | the hook used to replace captions during its 3.4 s | `hook.keep_captions` — the title sits above the caption rows |
@@ -181,7 +181,23 @@ The QA agent found 0 blockers and 2 majors on round 1: 0.8 s of dead air after "
 early, so the cut sat in the wrong place) and a double jump cut around a lone "그치". Both were fixed in the plan;
 the rest were English polish and caption timing. See [`examples/ep11`](../examples/ep11).
 
-The 4K master renders at ~3 fps on the Mac (mosaic included): 2822 frames, 94.1 s, 2160x3840 HEVC 10-bit, −10.5 LUFS.
+### The face mosaic that didn't make it
+
+On stills the mosaic looked right ("은은하게 보일듯말듯" — the face shape there, features unreadable). In motion it
+didn't: **whenever he moved, the mosaic shimmered and looked like it was breaking up.** Why, looking at the code:
+
+- the block grid was anchored to the tracked face box, so every time the box moved a few pixels every block
+  re-sampled a different patch of skin → the whole patch "boils";
+- the block size followed the face width frame by frame, so the grid also changed scale;
+- the track came from the 720p proxy (1 px there = 3 px at 4K), detected every 2nd frame and smoothed over only
+  0.4 s, so small tracking noise turned into visible wobble; the 1.26× speed-up made it faster.
+
+Making the blocks stronger (10 % → 12 %) only made the shimmer easier to see. The final 4K ships **without a mosaic**;
+the code stays in the repo but off by default. If it comes back, it needs a grid fixed to the frame, one block size
+per take and much heavier temporal smoothing — or a plain soft blur instead of blocks — and it has to be judged on
+moving video, not stills.
+
+The 4K master renders at ~3 fps on the Mac: 2822 frames, 94.1 s, 2160x3840 HEVC 10-bit, −10.5 LUFS.
 
 What I learned about the skill itself: a new framing should not be a new skill. The workflow didn't change at all;
 only layout, speakers and upload format did. So the skill now keeps the workflow in SKILL.md and moves each format

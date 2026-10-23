@@ -22,11 +22,11 @@ the user pointed at, 2026-10-23). This is an occasional format, not the default.
 
 ## Modules
 - `character`: **off** (the guest is visible). `zoom`: off by default. `cards`: allowed, same rules as portrait.
-- Guest face mosaic (when the guest isn't a regular / asks for it): `python3 $S/track_guest.py prx/src_720.mp4
-  guest_face.npz --side left|right`, then plan `"mosaic": {"track": "guest_face.npz", "block": 0.12, "blend": 0.95,
-  "soften": 0.38, "feather": 0.30, "pad": [0.12, 0.10]}`. Block = 12 % of the face width (ep11: 10 % read as too light), Gaussian-softened, feathered
-  ellipse → features unreadable, face shape still there ("은은하게 보일듯말듯"). It applies at every stage, previews
-  included. Ship `guest_face.npz` next to `edl.json` in the 4K job.
+- Guest face mosaic: **off — rejected on ep11.** `track_guest.py` + plan `"mosaic": {"track": …, "block", "blend",
+  "soften", "feather", "pad"}` exist, but the result shimmered and looked broken whenever the guest moved (the block
+  grid follows the tracked box, block size follows face width per frame, the track is from the 720p proxy with 0.4 s
+  smoothing). Only use it if the user asks again, and fix that first: grid anchored to the frame, one block size per
+  take, heavy temporal smoothing (or a soft blur instead of blocks). Judge it on moving video, never on stills.
 
 ## Speakers
 One mic, two voices: diarization collapses (ep11: 617 vs 62 windows). Assign speakers from the content and the
@@ -35,4 +35,4 @@ host's mouth logit (guest lines show logits below ≈ +0.8) with `words_patch.js
 
 ## QA brief for the subagent
 "Landscape two-shot: both on camera; host right (black upper row), guest left (navy lower row); no character GIF and
-no zoom by design; the guest's face is softly mosaicked on purpose. Review the unrotated landscape preview."
+no zoom by design. Review the unrotated landscape preview."
