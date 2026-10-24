@@ -22,10 +22,10 @@ DEFAULT_STYLE = {
              "intro1": "AI 3년차 개발자와 Sydney Uni 금융 경제", "intro2": "고품격 힐링 토크쇼",
              "intro1_glyph_h": 77, "intro1_cy": 2239, "intro1_w": 1490, "intro2_glyph_h": 117, "intro2_cy": 2438, "intro2_w": 1167},
     "english": {"size": 68, "min_size": 50, "color": [236, 236, 236], "shadow": [0, 2, 200, 4], "stroke": 3, "stroke_color": [45, 45, 45], "gap": -6, "max_w": 1900},
-    "character": {"gif": "character.gif", "width": 1041, "cx": 1828, "cy": 2375},
+    "character": {"gif": "sydney-friend-explaining.gif", "width": 1041, "cx": 1828, "cy": 2375},
     "card": {"radius": 40, "title_size": 104, "line_size": 92, "accent_size": 128, "title_color": [38, 42, 120],
              "accent_color": [214, 58, 58], "down_color": [36, 92, 196], "text_color": [30, 30, 30], "pad": 54, "w": 1060, "right_margin": 110,
-             "top": 880, "enter_frames": 8, "exit_frames": 6},
+             "top": 880, "enter_frames": 6, "exit_frames": 5},
 }
 
 
@@ -202,10 +202,17 @@ def header_png(st, s, W, path):
     for key, top, gh, tw, bold in (('line1', Hd['l1_top'], Hd['l1_glyph_h'], Hd.get('l1_w'), 0),
                                    ('line2', Hd['l2_top'], Hd['l2_glyph_h'], Hd.get('l2_w'), Hd['l2_bold'])):
         size = size_for_glyph(gh * s, st)
-        li, base, ht, hb = render_text_rgba(Hd[key], size, st, Hd['color'], stroke=bold * s, stroke_fill=Hd['color'])
+        # dark backgrounds (stage footage): 'outline' adds a contrasting stroke + soft shadow around the header
+        ol = Hd.get('outline')
+        def _r(sz):
+            if ol:
+                return render_text_rgba(Hd[key], sz, st, Hd['color'], stroke=(bold + ol['width']) * s,
+                                        stroke_fill=tuple(ol['color']), shadow=(0, 4 * s, 120, 6 * s))
+            return render_text_rgba(Hd[key], sz, st, Hd['color'], stroke=bold * s, stroke_fill=Hd['color'])
+        li, base, ht, hb = _r(size)
         if tw:  # measured span of his header wins over glyph height (Latin/digits make Do Hyeon run wide)
             size *= tw * s / li.size[0]
-            li, base, ht, hb = render_text_rgba(Hd[key], size, st, Hd['color'], stroke=bold * s, stroke_fill=Hd['color'])
+            li, base, ht, hb = _r(size)
         x = int(round((Hd['cx'] * s if Hd.get('cx') else W / 2) - li.size[0] / 2))
         y = int(round(top * s - ht))
         im.alpha_composite(li, (max(0, x), max(0, y)))
@@ -218,12 +225,28 @@ def header_png(st, s, W, path):
 def hook_assets(text, st, s, W, outdir, fps=30):
     Hk = st['hook']
     size = size_for_glyph(Hk['glyph_h'] * s, st)
-    li, base, ht, hb = render_text_rgba(text, size, st, Hk['fill'], stroke=Hk['stroke'] * s, stroke_fill=Hk['stroke_fill'],
-                                        shadow=(0, 6 * s, 90, 8 * s))
-    if li.size[0] > Hk['max_w'] * s:
-        size *= Hk['max_w'] * s / li.size[0]
-        li, base, ht, hb = render_text_rgba(text, size, st, Hk['fill'], stroke=Hk['stroke'] * s, stroke_fill=Hk['stroke_fill'],
-                                            shadow=(0, 6 * s, 90, 8 * s))
+
+    def one(tx, sz):
+        return render_text_rgba(tx, sz, st, Hk['fill'], stroke=Hk['stroke'] * s, stroke_fill=Hk['stroke_fill'],
+                                shadow=(0, 6 * s, 90, 8 * s))
+    lines_ = text.split('\n')
+    rr = [one(tx, size) for tx in lines_]
+    widest = max(r[0].size[0] for r in rr)
+    if widest > Hk['max_w'] * s:   # one size for every line, set by the widest
+        size *= Hk['max_w'] * s / widest
+        rr = [one(tx, size) for tx in lines_]
+    if len(rr) == 1:
+        li, base, ht, hb = rr[0]
+    else:                           # stacked, centred, line pitch 1.18 x glyph height
+        gh = rr[0][3] - rr[0][2]
+        pitch = gh * Hk.get('line_pitch', 1.18)
+        wmax = max(r[0].size[0] for r in rr)
+        hh = int(pitch * (len(rr) - 1) + max(r[0].size[1] for r in rr)) + 2
+        li = Image.new('RGBA', (wmax, hh), (0, 0, 0, 0))
+        for j, r in enumerate(rr):
+            li.alpha_composite(r[0], ((wmax - r[0].size[0]) // 2, int(round(j * pitch))))
+        ht = rr[0][2]
+        hb = rr[-1][3] + pitch * (len(rr) - 1)
     x = even((Hk['cx'] * s if Hk.get('cx') else W / 2) - li.size[0] / 2)
     y = even(Hk['cy'] * s - (ht + hb) / 2)
     # fly-up animation frames: easeOutCubic offset + alpha fade, then static (last frame repeats)
@@ -269,10 +292,7 @@ def png_mov(frames_dir, mov, fps):
 
 def character_assets(st, s, outdir, fps=30):
     Ch = st['character']
-    gp = os.path.join(ASSETS, Ch['gif'])
-    if not os.path.exists(gp):  # bring your own guest character (transparent GIF); legacy name kept as fallback
-        gp = os.path.join(ASSETS, 'sydney-friend-explaining.gif')
-    gif = Image.open(gp)
+    gif = Image.open(os.path.join(ASSETS, Ch['gif']))
     frames, durs = [], []
     try:
         while True:
@@ -435,3 +455,208 @@ def card_assets(card, idx, st, s, W, H, face, outdir, fps=30):
     mov = os.path.join(outdir, f'card{idx}.mov')
     png_mov(fd, mov, fps)
     return dict(mov=mov, x=even(x), y=even(yy), frames=n, side=side, w=cw_, h=ch_)
+
+
+# ------------------------------------------------------------------ panel cards (montage / recap reels, ep12)
+# A full-width information panel whose rows reveal on a schedule (seconds from the card start). Used when the
+# screen is B-roll and the panel *is* the content: ladders, checklists, a crossed-out question, a definition.
+# Geometry in 2160x3840 canvas px, scaled by s. Row types:
+#   title {text,size}            text {text,size,color,align}      big {text,size,color,align}
+#   strike {text,size,strike_at} bar {label,pct,color,hi_at,hi_color}   check {text,check_at}
+#   src {text}                   gap {h}
+# Every row may carry 'at' (reveal time, default 0) and 'hi_at'/'hi_color' (colour change).
+PANEL = {"w": 1940, "top": 900, "pad": 70, "radius": 44, "bg": [255, 255, 255], "bg_alpha": 0.95,
+         "title_size": 96, "text_size": 84, "big_size": 132, "src_size": 50, "row_gap": 30,
+         "title_color": [38, 42, 120], "text_color": [30, 30, 30], "accent_color": [214, 58, 58], "dim_color": [150, 150, 150],
+         "bar_color": [38, 42, 120], "bar_bg": [232, 232, 238], "enter_frames": 6, "exit_frames": 5, "reveal_frames": 4, "bar_fill_s": 0.35}
+
+
+def panel_assets(card, idx, st, s, W, H, outdir, fps=30):
+    P = dict(PANEL)
+    P.update(st.get('panel', {}))
+    P.update({k: v for k, v in card.items() if k in PANEL})
+    ss = 2
+    k = s * ss
+    pw = P['w'] * k
+    pad = P['pad'] * k
+    inner = pw - 2 * pad
+    rows = []   # dict(kind, y, h, draw-data)
+    y = pad
+    for it in card['items']:
+        t = it['t']
+        at = float(it.get('at', 0.0))
+        if t == 'gap':
+            y += it.get('h', 30) * k
+            continue
+        if t in ('title', 'text', 'big', 'strike', 'src', 'check'):
+            size = it.get('size', P[{'title': 'title_size', 'big': 'big_size', 'src': 'src_size'}.get(t, 'text_size')])
+            tx = Text(size * k, st)
+            avail = inner - (size * k * 1.25 if t == 'check' else 0)
+            lines = wrap(it['text'], tx, avail)
+            a, b = tx.hangul_extent()
+            lh = (b - a) * (1.32 if t != 'big' else 1.22)
+            col = it.get('color') or (P['title_color'] if t == 'title' else P['accent_color'] if t == 'big'
+                                      else P['dim_color'] if t == 'src' else P['text_color'])
+            rows.append(dict(kind=t, y=y, h=lh * len(lines), lines=lines, tx=tx, lh=lh, a=a, b=b, col=col, at=at, it=it,
+                             align=it.get('align', 'center' if t == 'big' else 'left'), size=size))
+            y += lh * len(lines) + P['row_gap'] * k
+        elif t == 'bar':
+            size = it.get('size', P['text_size'])
+            tx = Text(size * k, st)
+            a, b = tx.hangul_extent()
+            lh = (b - a) * 1.5
+            sub = None
+            if it.get('sub'):
+                sub = Text(it.get('sub_size', 64) * k, st)
+                sa, sb = sub.hangul_extent()
+                slh = (sb - sa) * 1.35
+            else:
+                slh = 0
+            rows.append(dict(kind='bar', y=y, h=lh + slh, tx=tx, lh=lh, a=a, b=b, at=at, it=it, size=size, sub=sub, slh=slh))
+            y += lh + slh + P['row_gap'] * k
+        elif t == 'eq':   # left term + multi-line right side ("AX 인재 = | line1 / line2")
+            ls_ = it.get('left_size', P['big_size'])
+            rs_ = it.get('size', P['big_size'] * 0.85)
+            tl_ = Text(ls_ * k, st)
+            tr_ = Text(rs_ * k, st)
+            la, lb = tl_.hangul_extent()
+            ra_, rb_ = tr_.hangul_extent()
+            rlh = (rb_ - ra_) * 1.25
+            lw = tl_.width(it['left']) + 36 * k
+            rlines = []
+            for ln in it['right']:
+                rlines += wrap(ln, tr_, inner - lw)
+            hh = max((lb - la) * 1.25, rlh * len(rlines))
+            rows.append(dict(kind='eq', y=y, h=hh, tl=tl_, tr=tr_, la=la, lb=lb, ra=ra_, rb=rb_, rlh=rlh, lw=lw,
+                             rlines=rlines, at=at, it=it))
+            y += hh + P['row_gap'] * k
+    y += pad - P['row_gap'] * k
+    ph = y
+    shadow = int(30 * k)
+    CW, CH = int(pw + 2 * shadow), int(ph + 2 * shadow)
+    base = Image.new('RGBA', (CW, CH), (0, 0, 0, 0))
+    shd = Image.new('RGBA', base.size, (0, 0, 0, 0))
+    ImageDraw.Draw(shd).rounded_rectangle([shadow, shadow + 8 * k, shadow + pw, shadow + ph + 8 * k], radius=P['radius'] * k,
+                                          fill=(0, 0, 0, 80))
+    shd = shd.filter(ImageFilter.GaussianBlur(14 * k))
+    base.alpha_composite(shd)
+    ImageDraw.Draw(base).rounded_rectangle([shadow, shadow, shadow + pw, shadow + ph], radius=P['radius'] * k,
+                                           fill=tuple(P['bg']) + (int(255 * P['bg_alpha']),))
+
+    def draw_row(im, r, alpha, now):
+        layer = Image.new('RGBA', im.size, (0, 0, 0, 0))
+        d = ImageDraw.Draw(layer)
+        it = r['it']
+        hi = it.get('hi_at') is not None and now >= it['hi_at']
+        x0 = shadow + pad
+        if r['kind'] == 'eq':
+            yy = shadow + r['y']
+            lcol = tuple(it.get('left_color', P['title_color']))
+            rcol = tuple(it.get('color', P['accent_color']))
+            bl = yy + r['h'] / 2 - (r['la'] + r['lb']) / 2
+            r['tl'].draw(d, x0, bl, it['left'], fill=lcol + (255,))
+            ra_at = it.get('right_at', r['at'])
+            if now >= ra_at:
+                ry = yy + (r['h'] - r['rlh'] * len(r['rlines'])) / 2
+                for ln in r['rlines']:
+                    r['tr'].draw(d, x0 + r['lw'], ry + r['rlh'] / 2 - (r['ra'] + r['rb']) / 2, ln, fill=rcol + (255,))
+                    ry += r['rlh']
+        elif r['kind'] == 'bar':
+            col = tuple(it.get('hi_color', P['accent_color']) if hi else it.get('color', P['bar_color']))
+            lab_w = inner * it.get('label_frac', 0.56)
+            yb = shadow + r['y'] + r['lh'] / 2 - (r['a'] + r['b']) / 2
+            r['tx'].draw(d, x0, yb, it['label'], fill=col + (255,))
+            if r.get('sub'):
+                sa, sb = r['sub'].hangul_extent()
+                sy = shadow + r['y'] + r['lh'] + r['slh'] / 2 - (sa + sb) / 2 - 6 * k
+                r['sub'].draw(d, x0, sy, it['sub'], fill=tuple(it.get('sub_color', [90, 90, 90])) + (255,))
+            bx0 = x0 + lab_w
+            bx1 = shadow + pad + inner - 190 * k
+            bh = (r['b'] - r['a']) * 0.95
+            by = shadow + r['y'] + r['lh'] / 2 - bh / 2
+            d.rounded_rectangle([bx0, by, bx1, by + bh], radius=bh / 2, fill=tuple(P['bar_bg']) + (255,))
+            prog = min(1.0, max(0.0, (now - r['at']) / P['bar_fill_s']))
+            prog = 1 - (1 - prog) ** 3
+            fw = max(bh, (bx1 - bx0) * it['pct'] / 100.0 * prog)
+            d.rounded_rectangle([bx0, by, bx0 + fw, by + bh], radius=bh / 2, fill=col + (255,))
+            r['tx'].draw(d, bx1 + 24 * k, yb, f"{it['pct']:g}%", fill=col + (255,))
+        else:
+            col = tuple(it.get('hi_color', P['accent_color']) if hi else r['col'])
+            yy = shadow + r['y']
+            for ln in r['lines']:
+                w_ = r['tx'].width(ln)
+                if r['kind'] == 'check':
+                    bs = (r['b'] - r['a']) * 0.95
+                    by = yy + r['lh'] / 2 - bs / 2
+                    d.rounded_rectangle([x0, by, x0 + bs, by + bs], radius=bs * 0.18, outline=col + (255,), width=max(2, int(6 * k)))
+                    if it.get('check_at') is not None and now >= it['check_at']:
+                        d.line([(x0 + bs * 0.18, by + bs * 0.52), (x0 + bs * 0.42, by + bs * 0.78), (x0 + bs * 0.86, by + bs * 0.2)],
+                               fill=tuple(P['accent_color']) + (255,), width=max(3, int(12 * k)), joint='curve')
+                    xt = x0 + bs * 1.3
+                else:
+                    xt = x0 + (inner - w_) / 2 if r['align'] == 'center' else x0
+                bl = yy + r['lh'] / 2 - (r['a'] + r['b']) / 2
+                r['tx'].draw(d, xt, bl, ln, fill=col + (255,))
+                if r['kind'] == 'strike' and it.get('strike_at') is not None and now >= it['strike_at']:
+                    sp = min(1.0, (now - it['strike_at']) / 0.35)
+                    ym = bl + (r['a'] + r['b']) / 2
+                    d.line([(xt - 10 * k, ym), (xt - 10 * k + (w_ + 20 * k) * sp, ym)], fill=tuple(P['accent_color']) + (255,),
+                           width=max(3, int(10 * k)))
+                yy += r['lh']
+        if alpha < 1.0:
+            layer.putalpha(layer.getchannel('A').point(lambda v: int(v * alpha)))
+        off = int(round((1 - alpha) * 24 * k))
+        im.alpha_composite(layer, (0, off))
+
+    n = int(round((card['out_end'] - card['out_start']) * fps))
+    ne, nx, nr = P['enter_frames'], P['exit_frames'], P['reveal_frames']
+    fd = os.path.join(outdir, f'card{idx}_frames')
+    os.makedirs(fd, exist_ok=True)
+    cache = {}
+    for i in range(n):
+        now = i / fps
+        sig = []
+        for r in rows:
+            p = ((now - r['at']) * fps + 1) / nr if now >= r['at'] - 1e-6 else 0.0
+            al = round(min(1.0, max(0.0, p)), 2)
+            it = r['it']
+            st_ = (al, it.get('hi_at') is not None and now >= it['hi_at'],
+                   round(min(1.0, max(0.0, (now - r['at']) / P['bar_fill_s'])), 2) if r['kind'] == 'bar' else 0,
+                   round(min(1.0, max(0.0, (now - it.get('strike_at', 1e9)) / 0.35)), 2) if r['kind'] == 'strike' else 0,
+                   it.get('check_at') is not None and now >= it.get('check_at', 1e9),
+                   now >= it.get('right_at', -1))
+            sig.append(st_)
+        if i < ne:
+            pp = (i + 1) / ne
+            c1, c3 = 1.70158, 2.70158
+            e = 1 + c3 * (pp - 1) ** 3 + c1 * (pp - 1) ** 2
+            sc, gal = 0.94 + 0.06 * e, pp
+        elif i >= n - nx:
+            sc, gal = 1.0, (n - i - 1) / nx
+        else:
+            sc, gal = 1.0, 1.0
+        key = (tuple(sig), round(sc, 3), round(gal, 3))
+        fp = os.path.join(fd, f'{i:04d}.png')
+        if key in cache:
+            if not os.path.exists(fp):
+                os.link(cache[key], fp)
+            continue
+        im = base.copy()
+        for r, sg in zip(rows, sig):
+            if sg[0] > 0:
+                draw_row(im, r, sg[0], now)
+        im = im.resize((even(CW / ss), even(CH / ss)), Image.LANCZOS)
+        if sc != 1.0 or gal != 1.0:
+            fr = Image.new('RGBA', im.size, (0, 0, 0, 0))
+            tmp = im.resize((max(2, int(im.size[0] * sc)), max(2, int(im.size[1] * sc))), Image.LANCZOS)
+            tmp.putalpha(tmp.getchannel('A').point(lambda v: int(v * max(0.0, min(1.0, gal)))))
+            fr.alpha_composite(tmp, ((im.size[0] - tmp.size[0]) // 2, (im.size[1] - tmp.size[1]) // 2))
+            im = fr
+        im.save(fp)
+        cache[key] = fp
+    mov = os.path.join(outdir, f'card{idx}.mov')
+    png_mov(fd, mov, fps)
+    w_, h_ = even(CW / ss), even(CH / ss)
+    x = even(W / 2 - w_ / 2)
+    yy = even(P['top'] * s - shadow / ss)
+    return dict(mov=mov, x=x, y=yy, frames=n, side='center', w=w_, h=h_)

@@ -202,3 +202,24 @@ The 4K master renders at ~3 fps on the Mac: 2822 frames, 94.1 s, 2160x3840 HEVC 
 What I learned about the skill itself: a new framing should not be a new skill. The workflow didn't change at all;
 only layout, speakers and upload format did. So the skill now keeps the workflow in SKILL.md and moves each format
 into its own reference file (see the README's *Skill design* section).
+
+
+## 8. Case 3 — a conference recap with no conversation take (ep12)
+
+A reel from 5 clips I filmed in the audience at DMI 2027. There was no conversation to cut, so this one started with **planning**.
+
+- **Planning:** the 6 decks and the transcripts of all 5 clips went into one brief. 4 planner subagents each wrote a plan from a different angle (AX-talent definition / numbers + self-check / developer's take / Adobe's rebuttal). A judge agent scored them and checked every quoted speaker timecode against the audio (78 / 77 / 75 / 74). I took the judge's merge of #1 and #2, with no extra shooting; my narration gets recorded later.
+- **Editing:** two clips were concatenated without re-encoding into one source, with a hand-built EDL ([`examples/ep12/build_ep12.py`](../examples/ep12/build_ep12.py)). The speaker's own lines alternate with full-width info panels whose rows reveal on a schedule.
+- **Dark stage:** the default black header disappeared against the ceiling, so it became white with a black outline.
+
+Every piece of feedback from preview v1 to v9 is logged in [`examples/ep12/feedback.md`](../examples/ep12/feedback.md). What went into the skill:
+
+| My feedback | Rule in the skill |
+|---|---|
+| "the hallucination line cuts off" | STT ended the sentence 1.7 s early → confirm speech spans with RMS + re-transcription windows |
+| "the deck's own words land better" | panel text quotes the source, no shortening |
+| "no captions on my narration" | recap format: narration gets no caption row |
+| "it zooms twice" | one framing per sentence run, ≤ 1.35x on slides |
+| "the overlays are slow" | **every card/panel:** first row ≤ 0.5 s, rows 0.5–0.8 s apart, +0.3 s before the key line, hold 1.5–2 s, ≤ 8 s per panel |
+
+The overlay pacing rule isn't specific to this episode: it's now a common rule in step 3 of SKILL.md.

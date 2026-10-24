@@ -45,6 +45,7 @@ bottleneck** and leaves the quality-sensitive look to CapCut:
 | **ep9 「트럼프 전쟁」** — [my own CapCut edit](https://www.instagram.com/reel/DeIZ4g9J8vI/) | ground truth: segments, speeds, caption styles and character timing read from the CapCut draft JSON | style spec + an automatic evaluator (`eval/gt9.json`, `eval/evaluate.py`) |
 | **ep10 「GPT-6」** — same set-up and framing, different content | 283.5 s take → **97.3 s**, 34 segments, 58 KR+EN captions, cold-open hook | QA round 1: 1 blocker / 3 major / 11 minor → round 2: 0 blocker ([findings](examples/ep10/qa_round1_findings.json)) |
 | **ep11 「AI 빈부격차」** — a different framing: landscape two-shot, guest on camera (a middle-school special-ed teacher friend, not 정우) | 219.5 s take → **94.1 s**, 25 segments, 56 KR+EN captions; uploaded as a landscape edit turned 90° clockwise (the viewer tilts the phone); a face mosaic was tried and dropped (it shimmered on movement) | QA round 1: 0 blocker / 2 major / 12 minor → all majors fixed ([case 2](docs/JOURNEY.md#7-case-2--a-different-framing-ep11)) |
+| **ep12 「대체 안 되는 AX 인재」** — a conference recap: 5 audience-view clips, no conversation take, planning first (4 planner subagents + a judge) | hand-built EDL over 2 concatenated clips, speaker lines + reveal panels, ~49 s; 9 preview rounds of feedback → overlay pacing rule | [feedback log](examples/ep12/feedback.md) |
 | more framings | next: two cameras, standing / walking shots | planned |
 
 ---

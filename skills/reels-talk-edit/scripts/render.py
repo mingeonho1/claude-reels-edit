@@ -189,7 +189,10 @@ def cmd_prepare(a):
         return segs[-1]
     cards = []
     for i, c in enumerate(E.get('cards', []) if L.get('cards', True) else []):
-        info = OV.card_assets(c, i, st, s, W, H, seg_at(c['out_start']).get('face'), AD)
+        if c.get('layout') == 'panel':   # full-width reveal panel (montage/recap reels)
+            info = OV.panel_assets(c, i, st, s, W, H, AD)
+        else:
+            info = OV.card_assets(c, i, st, s, W, H, seg_at(c['out_start']).get('face'), AD)
         info.update(t0=c['out_start'], t1=c['out_end'])
         cards.append(info)
     man['cards'] = cards
@@ -655,6 +658,28 @@ def cmd_audio(a):
     sh([FFMPEG, '-v', 'error', '-y', '-i', a.audio, '-filter_complex_script', gf, '-map', '[cat]', '-ac', '1', '-ar', '48000',
         '-c:a', 'pcm_f32le', cut])
     I0, TP0 = measure(cut)
+    # narration recorded afterwards (recap/montage format): each clip leveled to the cut's loudness + rel_db, then
+    # mixed in at its output time before the voice chain, so the chain and the loudness search treat it like speech
+    vos = E.get('voice_over', [])
+    if vos:
+        ins, fl = ['-i', cut], []
+        ncut = int(round(man['out_frames'] / FPS * 48000))
+        for j, v in enumerate(vos):
+            Iv, _ = measure(v['file'])
+            g = (I0 + v.get('rel_db', 3.0)) - Iv
+            ins += ['-i', v['file']]
+            tr = f"atrim=start={v.get('src_start', 0):.3f}" + (f":end={v['src_end']:.3f}" if v.get('src_end') else '')
+            fl.append(f"[{j + 1}:a]{tr},asetpts=PTS-STARTPTS,aresample=48000,pan=mono|c0=c0,volume={g:.2f}dB,"
+                      f"afade=t=in:d=0.02,adelay={int(round(v['out_start'] * 1000))},apad,atrim=end_sample={ncut}[v{j}]")
+        n_ = len(vos)
+        # amerge + pan sum (ffmpeg 4.4 on the Mac has no amix normalize=0)
+        fl.append('[0:a]' + ''.join(f'[v{j}]' for j in range(n_)) + f'amerge=inputs={n_ + 1},'
+                  'pan=mono|c0=' + '+'.join(f'c{j}' for j in range(n_ + 1)) + '[mx]')
+        cut2 = os.path.join(AU, 'cut_vo.wav')
+        sh([FFMPEG, '-v', 'error', '-y'] + ins + ['-filter_complex', ';'.join(fl), '-map', '[mx]', '-ac', '1', '-ar', '48000',
+            '-c:a', 'pcm_f32le', cut2])
+        cut = cut2
+        I0, TP0 = measure(cut)
     # noise floor estimate (10th percentile of 50 ms RMS)
     raw = sh([FFMPEG, '-v', 'error', '-i', cut, '-f', 'f32le', '-ac', '1', '-ar', '16000', '-'], ).stdout if False else None
     data = subprocess.run([FFMPEG, '-v', 'error', '-i', cut, '-f', 'f32le', '-ac', '1', '-ar', '16000', '-'], capture_output=True).stdout

@@ -1,11 +1,12 @@
 ---
 name: reels-talk-edit
-description: "@geono_x 2인 토크 릴스를 촬영본에서 편집한다: CapCut 보정본(또는 아이폰 원본) → ①컷 미리보기·승인 → ②한국어 자막 + 그걸 번역한 영어 자막·승인 → ③연출(선택) → ④독립 검수 서브에이전트 → ⑤Mac 4K. 세로 1인 화면(게스트 화면 밖)과 가로 투샷(90° 회전 업로드) 모두 처리. '릴스 편집', 'N번 컷편집/자막', '보정본 편집해줘'에 사용. 기획·대본 작성이나 썸네일 제작에는 쓰지 않는다."
+description: "@geono_x 릴스를 촬영본에서 편집한다: 2인 토크(세로·가로 투샷 90° 회전 업로드)와 컨퍼런스 객석 영상 후기 몽타주(기획 서브에이전트+심사 먼저). 컷 미리보기·승인 → 한국어+영어 자막·승인 → 연출(선택) → 독립 검수 → Mac 4K. '릴스 편집', 'N번 컷편집/자막', '컨퍼런스 다녀온 릴스'에 사용."
 ---
 
 # reels-talk-edit — one agent, one workflow, gated stages
 
-Planning/script is out of scope: this starts from footage. His time sinks (2026-10-22): **cuts ≫ captions ≫
+Talk takes start from footage (no planning step); the recap-montage format starts with planning (subagent plans +
+judge, see its reference). His time sinks (2026-10-22): **cuts ≫ captions ≫
 everything else** → stages 1–2 are the core, 3 is optional. The workflow is the same for every format; only
 layout details differ, and those live in a format reference (read exactly one):
 
@@ -13,6 +14,7 @@ layout details differ, and those live in a format reference (read exactly one):
 |---|---|---|
 | portrait 2160x3840, guest off camera (정우 + character GIF) | default | [references/format-portrait-offcam.md](references/format-portrait-offcam.md) |
 | landscape 3840x2160, both people on camera | two-shot | [references/format-landscape-twoshot.md](references/format-landscape-twoshot.md) |
+| several audience-view clips of talks (conference recap), no conversation take | recap montage (planning first) | [references/format-recap-montage.md](references/format-recap-montage.md) |
 | raw iPhone file (HLG) and the user asks for retouching | add-on | [references/retouch-from-raw.md](references/retouch-from-raw.md) |
 
 Copy this checklist into your task list and tick it off:
@@ -89,7 +91,9 @@ python3 $S/cutlist.py --edl edl_cut.json --words words.json --plan plan.json --o
 build_edl refuses captions over the limits; fix the plan, don't `--force` a final.
 
 ## 3. ENHANCE — optional, natural only (`"stage":"final"`, `"modules":{…}`)
-Modules and their numbers are format-specific → the format reference. Always: transition = plain cut (flash/whoosh
+Modules and their numbers are format-specific → the format reference. Overlay pacing (all cards/panels, 2026-10-24
+"오버레이가 느리다"): first row ≤ 0.5 s after the card appears, rows 0.5–0.8 s apart, +0.3 s beat before the key line,
+hold 1.5–2.0 s after the last row, ≤ 8 s per card; enter 6 frames, fades 4–5 frames. Always: transition = plain cut (flash/whoosh
 read as cheap — only on request); never karaoke captions, emoji, random colours, SFX spam, face warps beyond
 `head_shrink` 0.035. Evidence: [references/retention_research.md](references/retention_research.md).
 
