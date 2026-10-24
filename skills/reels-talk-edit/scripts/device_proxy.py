@@ -3,8 +3,11 @@
 (device_bash calls die after 180 s; keep each call <= --budget 140 s). python3.10 + ffmpeg 4.4, no numpy needed.
 
 usage (repeat until it prints PROXY_DONE):
-  python3 device_proxy.py ~/mnt/capcut/me/10_x/소스/IMG_1234.MOV ~/mnt/capcut/me/10_x/_reels_work/prx --budget 140
-outputs: OUT/src_720.mp4 (H.264 8-bit, colour tags of the source kept -> HLG stays HLG), OUT/src.wav (48k mono pcm)
+  python3 device_proxy.py ~/mnt/capcut/me/10_x/소스/IMG_1234.MOV ~/rte_work/10/prx --stage ~/mnt/capcut/_claude_stage --slot 0
+outputs: OUT/src_720.mp4 (H.264 8-bit, colour tags of the source kept -> HLG stays HLG), OUT/src.wav (48k mono pcm).
+Disk rule (2026-10-25: ep10-12 left 5.6 GB of scratch in his folders): OUT lives in the VM scratch ($HOME, outside
+mnt/, gone with the session); --stage copies only the two files to be staged into a fixed, reused slot
+(STAGE/proxy<slot>.mp4 + .wav), overwritten every episode, so nothing piles up in his folders.
 4K HEVC decode runs ~1.2x realtime on 4 threads -> chunk = 100 s of source by default.
 """
 import argparse, json, os, subprocess, time
@@ -15,6 +18,8 @@ FFPROBE = os.environ.get('FFPROBE', 'ffprobe')
 ap = argparse.ArgumentParser()
 ap.add_argument('mov'); ap.add_argument('out')
 ap.add_argument('--budget', type=float, default=140); ap.add_argument('--chunk', type=float, default=100)
+ap.add_argument('--stage', help='folder under mnt/ to copy the stageable proxy into (reused slot)')
+ap.add_argument('--slot', type=int, default=0)
 a = ap.parse_args()
 a.out = os.path.abspath(a.out)  # concat lists resolve relative paths against the list's own folder
 os.makedirs(a.out, exist_ok=True)
@@ -50,6 +55,14 @@ if len(st['done']) == len(chunks):
     open(lst, 'w').write(''.join(f"file '{os.path.join(a.out, f'part{k:02d}.mp4')}'\n" for k in range(len(chunks))))
     subprocess.run([FFMPEG, '-v', 'error', '-y', '-f', 'concat', '-safe', '0', '-i', lst, '-i', wav, '-map', '0:v', '-map', '1:a',
                     '-c:v', 'copy', '-c:a', 'aac', '-b:a', '128k', os.path.join(a.out, 'src_720.mp4')], check=True)
-    print('PROXY_DONE', os.path.join(a.out, 'src_720.mp4'), wav)
+    outs = [os.path.join(a.out, 'src_720.mp4'), wav]
+    if a.stage:
+        import shutil
+        os.makedirs(a.stage, exist_ok=True)
+        outs = [os.path.join(a.stage, f'proxy{a.slot}.mp4'), os.path.join(a.stage, f'proxy{a.slot}.wav')]
+        for src, dst in zip([os.path.join(a.out, 'src_720.mp4'), wav], outs):
+            with open(src, 'rb') as fi, open(dst, 'wb') as fo:     # overwrite in place (no delete permission needed)
+                shutil.copyfileobj(fi, fo, 1 << 22)
+    print('PROXY_DONE', *outs)
 else:
     print(f'PENDING {len(chunks) - len(st["done"])} chunks; call again')

@@ -16,7 +16,8 @@ own lines + information panels, optionally with his narration recorded afterward
 ## Build
 - Concatenate the needed clips with stream copy (`-f concat -c copy`, same codec) → one source; audio = each clip's
   wav padded to its video length, then concatenated. Offsets = frame counts / 30. On the Mac do the same with the
-  4K MOVs (no re-encode).
+  4K MOVs (`-map 0:v -c copy`, no re-encode) **into the VM scratch** (ep12: 580 MB); the master's
+  audio = the cloud's concatenated `src.wav` (`render.py audio --audio src.wav`).
 - Hand-built EDL (example: `examples/ep12/build_ep12.py`): blocks of `{clip, s, e, speed, gain, zooms, caps, panel}`.
   Speech blocks: speed 1.1–1.2, navy captions. B-roll blocks: `gain_db −20` (speaker murmur under a panel / his VO).
   A long pause inside one sentence: split the block into two sub-spans with the **same zoom** (a zoom change at an

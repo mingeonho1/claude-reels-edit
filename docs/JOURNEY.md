@@ -223,3 +223,8 @@ Every piece of feedback from preview v1 to v9 is logged in [`examples/ep12/feedb
 | "the overlays are slow" | **every card/panel:** first row ≤ 0.5 s, rows 0.5–0.8 s apart, +0.3 s before the key line, hold 1.5–2 s, ≤ 8 s per panel |
 
 The overlay pacing rule isn't specific to this episode: it's now a common rule in step 3 of SKILL.md.
+
+
+### Disk rule (found while tidying up ep10–12)
+
+After ep10–12 my `claude/` folders held 5.6 GB of work files (~1.9 GB per episode): 4K render pieces, an audio-less intermediate (`video_only.mp4`), wavs, proxies and leftover render versions (v2/v3/v4…). The only things worth keeping were a few MB of plan/EDL. Now every work file is made in the Mac VM's scratch space (`$HOME/rte_work`, gone when the session ends), and my folders get only the final 4K, a small record in `claude/` (< 5 MB) and a transfer slot that is overwritten every episode (`~/capcut/_claude_stage`).
