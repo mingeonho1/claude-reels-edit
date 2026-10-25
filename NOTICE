@@ -11,6 +11,9 @@ Runtime dependencies: FFmpeg (LGPL/GPL, with libx265 GPL), OpenCV, NumPy, SciPy,
 
 Included and owned by the author (mingeonho1):
 - skills/reels-talk-edit/assets/his_look.cube — colour LUT fitted on the author's own footage
-- skills/reels-talk-edit/eval/gt9.json, examples/ep10/* — transcripts and edit data of the author's own episodes
-- docs/img/ep10_frames.jpg — frames of the author's own video and guest character
+- skills/reels-talk-edit/eval/gt9.json, examples/ep10/*, examples/ep11/* — transcripts and edit data of the author's own
+  episodes (reference data; the skill does not apply them)
+- examples/ep12/* — edit script and feedback log of the author's conference recap (short quotes from public talks,
+  speakers credited)
+- docs/img/ep10_frames.jpg, docs/img/ep11_frames.jpg — frames of the author's own videos and guest character
 The guest character GIF is not included.

@@ -58,9 +58,10 @@ bottleneck** and leaves the quality-sensitive look to CapCut:
 | [`skills/reels-qa/`](skills/reels-qa/SKILL.md) | The QA skill, run by a fresh subagent that never sees the editing plan |
 | [`skills/finance-reels-guard/`](skills/finance-reels-guard/SKILL.md) | Optional: a reviewer for finance/investing reels — 정보형 vs 해석형 (5 elements, ≥ 2 must be clear), evidence·viewpoint·delivery instead of views, four instant-fail risks (buy/sell instructions, guaranteed returns, undisclosed ads, copyright/music), and a 7-day insight analysis. Includes what my own test review taught me |
 | `skills/reels-talk-edit/scripts/` | Deterministic tools Claude calls: STT + word alignment, diarization, face track, EDL builder, renderer, cut list, auto QA |
-| `skills/reels-talk-edit/references/` | Loaded on demand: one file per format (portrait off-camera / landscape two-shot), retouch-from-raw, plan keys, the style spec measured from my edit, retention research |
+| `skills/reels-talk-edit/references/` | Loaded on demand: one file per format (portrait off-camera / landscape two-shot / conference recap montage), retouch-from-raw, plan keys, the style spec measured from my edit, retention research |
 | `skills/reels-talk-edit/eval/` | ep9 ground truth + evaluator (regression test) |
-| [`examples/ep10/`](examples/ep10) | A real `plan.json` (every editorial decision + KR/EN captions), the cut list and the QA report |
+| [`examples/ep10/`](examples/ep10), [`ep11/`](examples/ep11) | Real `plan.json` files (every editorial decision + KR/EN captions), cut lists and QA reports — reference data, not settings the skill applies |
+| [`examples/ep12/`](examples/ep12) | The conference recap: the hand-built EDL script and the preview-by-preview feedback log |
 | [`docs/JOURNEY.md`](docs/JOURNEY.md) | Why it is built this way and how it got here (tournament, feedback, redesign) |
 
 Division of labour: **Claude makes every editorial decision in `plan.json`** (what to drop, where lines end,
@@ -90,6 +91,8 @@ mkdir -p ~/.claude/skills && cp -R skills/reels-talk-edit skills/reels-qa ~/.cla
 
 Requirements: Python 3.10+, ffmpeg ≥ 4.4 with libx265, ~2 GB disk for models. A guest character GIF is not
 included — put your own transparent GIF at `skills/reels-talk-edit/assets/character.gif` or switch the module off.
+(Why a character: in a two-person talk an empty side of the conversation reads worse than a drawn stand-in for the
+off-camera friend.) `skills/finance-reels-guard` is optional — copy it too if you make finance/investing reels.
 
 ---
 
@@ -101,7 +104,7 @@ Checked against [Claude's skill authoring best practices](https://platform.claud
 | Guidance | What this repo does |
 |---|---|
 | Codex: "keep each skill focused on one job" | `reels-talk-edit` = one job (footage → finished reel). `reels-qa` = a different job (review a finished reel) |
-| Claude: SKILL.md under 500 lines, details in files loaded only when needed, one level deep, organised by variant | SKILL.md holds only the workflow (~120 lines). Each format is one reference file — `format-portrait-offcam.md`, `format-landscape-twoshot.md` — and Claude reads exactly one. Retouch-from-raw and the full plan keys are references too |
+| Claude: SKILL.md under 500 lines, details in files loaded only when needed, one level deep, organised by variant | SKILL.md holds only the workflow (~130 lines). Each format is one reference file — `format-portrait-offcam.md`, `format-landscape-twoshot.md`, `format-recap-montage.md` — and Claude reads exactly one. Retouch-from-raw and the full plan keys are references too |
 | Claude: checklists + feedback loops for multi-step work | the 6-stage checklist, two approval gates, QA → fix → re-check until 0 blocker / 0 major |
 | Claude: scripts for deterministic work | Claude makes the editorial calls in `plan.json`; scripts do timing, rendering and measuring |
 | Claude Code: `context: fork` runs a skill in an isolated subagent | `reels-qa` declares `context: fork`, so it never sees the editing plan |

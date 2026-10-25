@@ -105,8 +105,8 @@ read as cheap — only on request); never karaoke captions, emoji, random colour
 `head_shrink` 0.035. Evidence: [references/retention_research.md](references/retention_research.md).
 
 ## 4. QA — independent subagent (≤ 3 rounds)
-Spawn a fresh `general-purpose` agent that does NOT get your plan or reasoning: "Use the reels-qa skill (or read
-references/reels-qa-SKILL.md). VIDEO=… EDL=… RENDER_DIR=… SCRIPTS=… OUT=…/qa_rN MODELS=…" plus 3–4 lines on the format
+Spawn a fresh `general-purpose` agent that does NOT get your plan or reasoning: "Use the reels-qa skill (repo:
+skills/reels-qa/SKILL.md). VIDEO=… EDL=… RENDER_DIR=… SCRIPTS=… OUT=…/qa_rN MODELS=…" plus 3–4 lines on the format
 (who is on camera, which modules are intentionally off). Give it the unrotated preview. Apply every blocker/major in
 the plan, rebuild, re-render, re-run `qa_auto.py`. Ship with 0 blocker / 0 major (or the user accepts them).
 Known false positives: whisper loops ("Q. Q. Q."), removed fillers, frame jumps that are fast hand gestures.

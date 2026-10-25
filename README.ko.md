@@ -56,9 +56,10 @@ CapCut으로 편집할 때 시간을 잡아먹는 건 딱 두 가지였어. **�
 | [`skills/reels-qa/`](skills/reels-qa/SKILL.md) | 검수 스킬. 편집 계획을 모르는 새 서브에이전트가 실행 |
 | [`skills/finance-reels-guard/`](skills/finance-reels-guard/SKILL.md) | 선택: 금융·투자 릴스 감시관 — 정보형/해석형 판정(5요소 중 2개 이상), 조회수 대신 근거·관점·전달력 점수, 바로 탈락 4가지(매수·매도 지시, 수익 보장, 광고 미고지, 저작권·음원), 업로드 7일 뒤 인사이트 분석. 직접 검수해보며 배운 점 포함 |
 | `skills/reels-talk-edit/scripts/` | Claude가 호출하는 결정적 도구: STT + 단어 정렬, 화자 분리, 얼굴 추적, EDL 빌더, 렌더러, 컷 리스트, 자동 검수 |
-| `skills/reels-talk-edit/references/` | 필요할 때만 읽는 문서: 구도별 파일(세로·게스트 화면 밖 / 가로 투샷), 원본 보정 재현, plan 키, 내 편집에서 측정한 스타일 스펙, 이탈 방지 리서치 |
+| `skills/reels-talk-edit/references/` | 필요할 때만 읽는 문서: 구도별 파일(세로·게스트 화면 밖 / 가로 투샷 / 컨퍼런스 후기 몽타주), 원본 보정 재현, plan 키, 내 편집에서 측정한 스타일 스펙, 이탈 방지 리서치 |
 | `skills/reels-talk-edit/eval/` | 9번 정답 + 채점기 (회귀 테스트) |
-| [`examples/ep10/`](examples/ep10) | 실제 `plan.json`(편집 결정 전부 + 한·영 자막), 컷 리스트, 검수 리포트 |
+| [`examples/ep10/`](examples/ep10), [`ep11/`](examples/ep11) | 실제 `plan.json`(편집 결정 전부 + 한·영 자막), 컷 리스트, 검수 리포트 — 참고용 예시이고 스킬이 적용하는 설정이 아님 |
+| [`examples/ep12/`](examples/ep12) | 컨퍼런스 후기: 손으로 짠 EDL 스크립트와 미리보기별 피드백 기록 |
 | [`docs/JOURNEY.ko.md`](docs/JOURNEY.ko.md) | 왜 이렇게 만들었고 어떤 과정을 거쳤는지 (대결, 피드백, 재설계) |
 
 역할 분담: **편집 판단은 전부 Claude가 `plan.json`에** 적어(뭘 자를지, 문장이 어디서 끝나는지, 자막, 영어, 훅).
@@ -87,6 +88,8 @@ mkdir -p ~/.claude/skills && cp -R skills/reels-talk-edit skills/reels-qa ~/.cla
 
 필요한 것: Python 3.10+, libx265가 들어간 ffmpeg 4.4 이상, 모델용 디스크 ~2 GB. 게스트 캐릭터 GIF는 포함하지
 않았어. 투명 GIF를 `skills/reels-talk-edit/assets/character.gif`에 넣거나 캐릭터 모듈을 꺼.
+(캐릭터를 쓰는 이유: 대화 형식에서 상대방 자리가 비어 있는 것보다, 화면 밖 친구 대신 캐릭터를 만들어 두는 게 더 나았어.)
+`skills/finance-reels-guard`는 선택이야. 금융·투자 릴스를 만들면 같이 복사해.
 
 ---
 
@@ -98,7 +101,7 @@ mkdir -p ~/.claude/skills && cp -R skills/reels-talk-edit skills/reels-qa ~/.cla
 | 가이드 | 이 레포에서는 |
 |---|---|
 | Codex: 스킬 하나는 한 가지 일만 | `reels-talk-edit` = 촬영본 → 완성 릴스. `reels-qa` = 완성본 검수(다른 일) |
-| Claude: SKILL.md는 500줄 이하, 자세한 내용은 필요할 때만 읽는 파일로, 한 단계 깊이, 변형별로 정리 | SKILL.md엔 워크플로우만(약 120줄). 구도는 파일 하나씩(`format-portrait-offcam.md`, `format-landscape-twoshot.md`)이고 Claude는 그중 하나만 읽어. 원본 보정 재현, plan 키 전체도 참고 문서 |
+| Claude: SKILL.md는 500줄 이하, 자세한 내용은 필요할 때만 읽는 파일로, 한 단계 깊이, 변형별로 정리 | SKILL.md엔 워크플로우만(약 130줄). 구도는 파일 하나씩(`format-portrait-offcam.md`, `format-landscape-twoshot.md`, `format-recap-montage.md`)이고 Claude는 그중 하나만 읽어. 원본 보정 재현, plan 키 전체도 참고 문서 |
 | Claude: 여러 단계 작업엔 체크리스트 + 검증 루프 | 6단계 체크리스트, 승인 2번, 검수 → 수정 → 재검수(blocker·major 0까지) |
 | Claude: 결정적인 일은 스크립트로 | 편집 판단은 Claude가 `plan.json`에, 타이밍·렌더·측정은 스크립트가 |
 | Claude Code: `context: fork`로 격리된 서브에이전트 실행 | `reels-qa`에 `context: fork`를 넣어서 편집 계획을 아예 못 보게 함 |

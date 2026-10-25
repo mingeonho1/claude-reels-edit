@@ -5,7 +5,8 @@ English | [한국어](JOURNEY.ko.md)
 ## 0. The problem
 
 My channel [@geono_x](https://www.instagram.com/geono_x/) is a talk format: one static iPhone on me (I ask), my friend
-정우 off camera across the table (he explains), a cartoon character of him on screen while he talks, Korean
+정우 off camera across the table (he explains), a cartoon character of him on screen while he talks (an empty side of the conversation read worse than a drawn
+stand-in), Korean
 captions plus a small English line. A 3–5 minute take becomes a ~90 s Reel.
 
 Planning and shooting are quick. The editing is slow, and almost all of it goes to **cutting** (finding where
@@ -166,7 +167,7 @@ What had to change, and why:
 | Proxy squashed the frame | the proxy step forced 720x1280 | scale by orientation (1280x720 for landscape) — never stretch |
 | Layout was portrait-only | caption rows, header and hook were measured on a 2160x3840 frame | `orientation: landscape` = a 3840x2160 canvas with its own layout; captions centred above the bottom 15 % (after rotation that edge sits under Instagram's right-hand buttons), header/hook left of centre to clear my head |
 | Rotation | my first try (`cclock`) put the image's top on the left; the reference reel I showed has it on the right | `rotate: clock` turns each finished frame inside the render, so the 4K master comes out 2160x3840 with no extra encode |
-| Guest privacy | — | tried: `track_guest.py` follows the guest's face and the render pixelates it (block 10 → 12 % of face width), softens the blocks and feathers an ellipse. **Dropped** — see below |
+| Guest privacy | — | tried: `track_guest.py` (since removed) follows the guest's face and the render pixelates it (block 10 → 12 % of face width), softens the blocks and feathers an ellipse. **Dropped** — see below |
 | Guest character | 정우's GIF makes no sense when the guest is on screen | character module off |
 | Who is speaking | diarization collapsed (617 vs 62 windows): two voices on one mic | speakers assigned from the content + my mouth motion (guest lines have low host logits), written into `words_patch.json` |
 | Hook covered the first lines | the hook used to replace captions during its 3.4 s | `hook.keep_captions` — the title sits above the caption rows |
@@ -193,7 +194,7 @@ didn't: **whenever he moved, the mosaic shimmered and looked like it was breakin
   0.4 s, so small tracking noise turned into visible wobble; the 1.26× speed-up made it faster.
 
 Making the blocks stronger (10 % → 12 %) only made the shimmer easier to see. The final 4K ships **without a mosaic**;
-the code stays in the repo but off by default. If it comes back, it needs a grid fixed to the frame, one block size
+the mosaic code was removed from the repo on 2026-10-25 (this write-up is the record). If it comes back, it needs a grid fixed to the frame, one block size
 per take and much heavier temporal smoothing — or a plain soft blur instead of blocks — and it has to be judged on
 moving video, not stills.
 
@@ -212,7 +213,7 @@ A reel from 5 clips I filmed in the audience at DMI 2027. There was no conversat
 - **Editing:** two clips were concatenated without re-encoding into one source, with a hand-built EDL ([`examples/ep12/build_ep12.py`](../examples/ep12/build_ep12.py)). The speaker's own lines alternate with full-width info panels whose rows reveal on a schedule.
 - **Dark stage:** the default black header disappeared against the ceiling, so it became white with a black outline.
 
-Every piece of feedback from preview v1 to v9 is logged in [`examples/ep12/feedback.md`](../examples/ep12/feedback.md). What went into the skill:
+Every piece of feedback from preview v1 to v10 is logged in [`examples/ep12/feedback.md`](../examples/ep12/feedback.md). What went into the skill:
 
 | My feedback | Rule in the skill |
 |---|---|

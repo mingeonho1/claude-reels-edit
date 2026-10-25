@@ -22,11 +22,11 @@ the user pointed at, 2026-10-23). This is an occasional format, not the default.
 
 ## Modules
 - `character`: **off** (the guest is visible). `zoom`: off by default. `cards`: allowed, same rules as portrait.
-- Guest face mosaic: **off — rejected on ep11.** `track_guest.py` + plan `"mosaic": {"track": …, "block", "blend",
-  "soften", "feather", "pad"}` exist, but the result shimmered and looked broken whenever the guest moved (the block
-  grid follows the tracked box, block size follows face width per frame, the track is from the 720p proxy with 0.4 s
-  smoothing). Only use it if the user asks again, and fix that first: grid anchored to the frame, one block size per
-  take, heavy temporal smoothing (or a soft blur instead of blocks). Judge it on moving video, never on stills.
+- Guest face mosaic: **tried on ep11 and rejected** — it shimmered and looked broken whenever the guest moved (the
+  block grid followed the tracked face box, the block size followed the face width every frame, the track came from
+  the 720p proxy with only 0.4 s smoothing). The code was removed on 2026-10-25; the story is in docs/JOURNEY §7.
+  If someone asks again, build it differently: grid anchored to the frame, one block size per take, heavy temporal
+  smoothing (or a soft blur instead of blocks), and judge it on moving video, never on stills.
 
 ## Speakers
 One mic, two voices: diarization collapses (ep11: 617 vs 62 windows). Assign speakers from the content and the

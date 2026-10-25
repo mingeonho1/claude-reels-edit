@@ -30,7 +30,7 @@ CapCut transform y (−1..1, + = up) → pixel center y = 1920 − y·1920.
 
 ## Character (guest avatar)
 - `assets/character.gif` (1024x1024, 40 frames × 80 ms loop, transparent) shown **while the guest is the one explaining**; hidden on host-only stretches. In ep.9 the GIF was on for 4 long blocks (5.1–16.3, 19.2–42.6, 45.3–54.7, 59.1–88.3 s): it stays on through short host 맞장구 inside a guest explanation and only drops for a real host question.
-- Placement: width ≈ 1041 px, center (1828, 2375) → right edge bleeds off-frame, sits beside/over the guest caption row. `assets/정우캐릭터.png` is a still version.
+- Placement: width ≈ 1041 px, center (1828, 2375) → right edge bleeds off-frame, sits beside/over the guest caption row. Why a character at all: in a two-person talk format an empty side of the conversation reads worse than a drawn stand-in for the off-camera friend, so his character (`assets/character.gif`, not in the repo) speaks for him on screen.
 
 ## Header / hook
 - 0 – 2.83 s (hook): big topic question top-center ("이란 전쟁 또?", Do Hyeon bold, black with white outline, ~260 px glyphs, center y ≈ 708, "flying line up" in-animation 1.0 s) + intro block mid-frame ("AI 3년차 개발자와 Sydney Uni 금융 경제" / "고품격 힐링 토크쇼", white with black outline, centers y ≈ 2239 / 2438) + a topic cut-out sticker bottom-center (episode specific, optional).

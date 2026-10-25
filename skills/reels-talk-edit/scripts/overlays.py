@@ -22,7 +22,7 @@ DEFAULT_STYLE = {
              "intro1": "AI 3년차 개발자와 Sydney Uni 금융 경제", "intro2": "고품격 힐링 토크쇼",
              "intro1_glyph_h": 77, "intro1_cy": 2239, "intro1_w": 1490, "intro2_glyph_h": 117, "intro2_cy": 2438, "intro2_w": 1167},
     "english": {"size": 68, "min_size": 50, "color": [236, 236, 236], "shadow": [0, 2, 200, 4], "stroke": 3, "stroke_color": [45, 45, 45], "gap": -6, "max_w": 1900},
-    "character": {"gif": "sydney-friend-explaining.gif", "width": 1041, "cx": 1828, "cy": 2375},
+    "character": {"gif": "character.gif", "width": 1041, "cx": 1828, "cy": 2375},
     "card": {"radius": 40, "title_size": 104, "line_size": 92, "accent_size": 128, "title_color": [38, 42, 120],
              "accent_color": [214, 58, 58], "down_color": [36, 92, 196], "text_color": [30, 30, 30], "pad": 54, "w": 1060, "right_margin": 110,
              "top": 880, "enter_frames": 6, "exit_frames": 5},

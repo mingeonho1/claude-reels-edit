@@ -201,15 +201,6 @@ def cmd_prepare(a):
     R = dict(smooth=0.60, slim=0.0, head_shrink=0.035, bilateral_s=4.0, bilateral_r=0.08, lift=0.14, lift_off=0.025, vshift=-0.008)
     R.update(E.get('retouch', {}))
     man['retouch'] = R
-    # soft face mosaic for an on-camera guest (two-shot takes; user 2026-10-23 '은은하게 보일듯말듯')
-    MZ = E.get('mosaic')
-    if MZ and L.get('mosaic', True):
-        tp = MZ['track'] if os.path.isabs(MZ['track']) else os.path.join(os.path.dirname(os.path.abspath(a.edl)), MZ['track'])
-        shutil.copy(tp, os.path.join(AD, 'mosaic_track.npz'))
-        man['mosaic'] = dict(track=os.path.join(AD, 'mosaic_track.npz'), block=MZ.get('block', 0.10), blend=MZ.get('blend', 0.9),
-                             soften=MZ.get('soften', 0.45), feather=MZ.get('feather', 0.30), pad=MZ.get('pad', [0.12, 0.10]))
-    else:
-        man['mosaic'] = None
     rt = {}
     for sg in segs:
         if not sg.get('face') or R.get('off'):
@@ -273,7 +264,7 @@ def piece_graph(man, p, threads):
     sp = p['speed']
     dur_src = N / FPS * sp + 0.6
     if needs_pipe(man, p):
-        # stage A (speed + scale), then the bilinear head warp and/or face mosaic in python; frames arrive on stdin
+        # stage A (speed + scale), then the bilinear head warp in python; frames arrive on stdin
         inputs.append(['-f', 'rawvideo', '-pix_fmt', PF, '-s', f'{W}x{H}', '-r', str(FPS), '-i', 'pipe:0'])
         fl.append("[0:v]setpts=PTS-STARTPTS")
     else:
@@ -430,7 +421,7 @@ def stage_a(man, p, src, threads, nframes):
 
 def needs_pipe(man, p):
     ra = man['retouch_assets'].get(p.get('rt')) if p.get('rt') else None
-    return bool((ra and ra.get('hwarp')) or man.get('mosaic'))
+    return bool(ra and ra.get('hwarp'))
 
 
 def warp_cmd(man, p):
@@ -439,8 +430,6 @@ def warp_cmd(man, p):
            '--bits', '10' if man['mode'] == 'final' else '8']
     if ra and ra.get('hwarp'):
         cmd += ['--map', ra['hwarp'], '--rect', f"{ra['hx']},{ra['hy']},{ra['hw']},{ra['hh']}"]
-    if man.get('mosaic'):
-        cmd += ['--mosaic', json.dumps(man['mosaic']), '--src0', f"{p['src']:.4f}", '--speed', str(p['speed'])]
     return cmd
 
 
@@ -457,20 +446,8 @@ def run_pipeline(man, p, src, threads, cmd):
         raise RuntimeError('piece pipeline failed: ' + ' '.join(cmd[:6]))
 
 
-def _mosaic_plane(P_, x0, y0, x1, y1, blk, sig, mask, blend):
-    import cv2
-    roi = P_[y0:y1, x0:x1].astype(np.float32)
-    h, w = roi.shape
-    sw, sh_ = max(1, int(round(w / blk))), max(1, int(round(h / blk)))
-    up = cv2.resize(cv2.resize(roi, (sw, sh_), interpolation=cv2.INTER_AREA), (w, h), interpolation=cv2.INTER_NEAREST)
-    if sig > 0.3:
-        up = cv2.GaussianBlur(up, (0, 0), sig)          # soften the block edges -> '보일듯말듯', not a hard grid
-    a_ = mask * blend
-    P_[y0:y1, x0:x1] = np.clip(roi * (1 - a_) + up * a_, 0, np.iinfo(P_.dtype).max).astype(P_.dtype)
-
-
 def cmd_warp(a):
-    """raw yuv420 frames stdin -> stdout: optional bilinear head warp (--map) and/or soft face mosaic (--mosaic)"""
+    """raw yuv420 frames stdin -> stdout: bilinear head warp (--map)"""
     import cv2
     W, H = a.w, a.h
     dt = np.uint16 if a.bits > 8 else np.uint8
@@ -481,11 +458,6 @@ def cmd_warp(a):
         M = np.load(a.map)
         x0, y0, w, h = [int(v) for v in a.rect.split(',')]
         yx, yy, cx, cy = M['yx'], M['yy'], M['cx'], M['cy']
-    MZ = json.loads(a.mosaic) if a.mosaic else None
-    if MZ:
-        TR = np.load(MZ['track'])
-        tt, bb = TR['t'], TR['box']
-        mask_cache = {}
     inp, outp = sys.stdin.buffer, sys.stdout.buffer
     j = 0
     while True:
@@ -501,28 +473,6 @@ def cmd_warp(a):
             c0, c1, cw, ch = x0 // 2, y0 // 2, w // 2, h // 2
             for P_ in (U, V):
                 P_[c1:c1 + ch, c0:c0 + cw] = cv2.remap(np.ascontiguousarray(P_[c1:c1 + ch, c0:c0 + cw]), cx[:ch, :cw], cy[:ch, :cw], cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE)
-        if MZ:
-            t = a.src0 + j / FPS * a.speed
-            bx = [float(np.interp(t, tt, bb[:, k])) for k in range(4)]
-            px, py = MZ['pad']
-            fx0, fy0 = (bx[0] - px * bx[2]) * W, (bx[1] - py * bx[3]) * H
-            fw, fh = bx[2] * (1 + 2 * px) * W, bx[3] * (1 + 2 * py) * H
-            X0, Y0 = max(0, int(fx0) // 2 * 2), max(0, int(fy0) // 2 * 2)
-            X1, Y1 = min(W, int(fx0 + fw + 1) // 2 * 2), min(H, int(fy0 + fh + 1) // 2 * 2)
-            if X1 - X0 >= 8 and Y1 - Y0 >= 8:
-                key = (X1 - X0, Y1 - Y0)
-                if key not in mask_cache:
-                    hh, ww = key[1], key[0]
-                    gy, gx = np.mgrid[0:hh, 0:ww].astype(np.float32)
-                    r = np.sqrt(((gx + 0.5) / ww * 2 - 1) ** 2 + ((gy + 0.5) / hh * 2 - 1) ** 2)  # ellipse, 1 at the rim
-                    f = MZ['feather']
-                    m = np.clip((1 - r) / f, 0, 1)
-                    mask_cache[key] = (m, cv2.resize(m, (ww // 2, hh // 2), interpolation=cv2.INTER_AREA))
-                m, mc = mask_cache[key]
-                blk = max(2.0, MZ['block'] * bx[2] * W)          # block size = fraction of the face width
-                _mosaic_plane(Y, X0, Y0, X1, Y1, blk, MZ['soften'] * blk, m, MZ['blend'])
-                for P_ in (U, V):
-                    _mosaic_plane(P_, X0 // 2, Y0 // 2, X1 // 2, Y1 // 2, blk / 2, MZ['soften'] * blk / 2, mc, MZ['blend'])
         outp.write(fr.tobytes())
         j += 1
     outp.flush()
@@ -813,7 +763,6 @@ if __name__ == '__main__':
     p = sub.add_parser('status'); p.add_argument('--out', required=True)
     p = sub.add_parser('_warp'); p.add_argument('--map'); p.add_argument('--w', type=int, required=True)
     p.add_argument('--h', type=int, required=True); p.add_argument('--bits', type=int, default=8); p.add_argument('--rect')
-    p.add_argument('--mosaic'); p.add_argument('--src0', type=float, default=0.0); p.add_argument('--speed', type=float, default=1.0)
     a = ap.parse_args()
     dict(prepare=cmd_prepare, run=cmd_run, audio=cmd_audio, finish=cmd_finish, verify=cmd_verify, still=cmd_still,
          status=cmd_status, _warp=cmd_warp)[a.cmd](a)

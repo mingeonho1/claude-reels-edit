@@ -741,7 +741,7 @@ edl = dict(source=a.src_name or WJ.get('source'), fps=FPS_OUT, out_frames=fr, ou
            style=style, warnings=warn,
            # 'landscape' = 16:9 two-shot laid out on a 3840x2160 canvas; rotate 'cclock' turns the finished frame
            # 90 deg so a landscape edit fills a vertical 9:16 screen (viewer tilts the phone; ep11)
-           orientation=P.get('orientation', 'portrait'), rotate=P.get('rotate'), mosaic=P.get('mosaic'))
+           orientation=P.get('orientation', 'portrait'), rotate=P.get('rotate'))
 sp = np.array([s['speed'] for s in segs]); wd = np.array([s['src_end'] - s['src_start'] for s in segs])
 if OUT_DUR > TARGET * 1.05:
     form_viol.append(f"output {OUT_DUR:.1f} s > {TARGET * 1.05:.1f} s (target {TARGET} s): drop ~{(OUT_DUR - TARGET) * 1.3:.0f} s of source")

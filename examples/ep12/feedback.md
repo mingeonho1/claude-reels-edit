@@ -17,6 +17,6 @@ is recorded later over the panel blocks. Every line below is his feedback on a p
 | v8→v9 | "AX 인재하고 빨간 글씨는 너무 빨리 나온다, 0.3초 뜸" | definition at 1.2 s, right side at 1.9 s | +0.3 s beat before the key line |
 | v9→v10 | "마케팅만 AX로 바꾸자" | header line 2 "마케팅 컨퍼런스 DMI 2027" → "AX 컨퍼런스 DMI 2027" | — |
 
-Planning (before v1): 4 planner subagents, 1 judge with a timecode-checking rubric (see `plan_judge.md`): P2 78,
+Planning (before v1): 4 planner subagents, 1 judge with a timecode-checking rubric: P2 78,
 P1 77, P4 75, P3 74 → he picked the judge's P1+P2 merge, no extra shooting, hook "대체 안 되는 AX 인재, / 질문부터 다르다".
 `build_ep12.py` is the hand-built EDL over the concatenated IMG_3025+IMG_3026 source.

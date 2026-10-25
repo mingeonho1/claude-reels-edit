@@ -57,6 +57,7 @@ Bottom line: most sources agree that the effect that hides an edit is the good o
 
 ## 7. Pre-post QA checklist
 1. Loudness: integrated −14 LUFS (±1), true peak ≤ −1 dBTP. Instagram publishes no spec, so stay in the −14 to −16 safe band. https://openclip.app/learn/audio-normalization
+   → Not what the skill ships: he wanted louder Reels, so `render.py audio` targets −10.5 LUFS (CapCut-corrected input) / −11 (raw), true peak ≤ −1 dBTP. The −14 band is the generic advice.
 2. BGM (if any) at 10–20% of voice level, roughly −16 to −20 dB under dialogue. https://quso.ai/blog/how-to-edit-podcast-shorts-like-a-pro.html
 3. Clicks and pops: every audio cut has a short crossfade (a few ms up to 2 frames) and sits near a zero crossing. Listen on headphones at each cut. https://descript.com/blog/article/crossfade-audio-what-crossfade-is-and-how-to-edit-it , https://1of10.com/blog/what-is-a-jump-cut/
 4. Lip/caption sync ≤ ±200 ms. Spot-check 5 random points plus every speaker switch. https://www.opus.pro/blog/video-captions-for-maximum-readability

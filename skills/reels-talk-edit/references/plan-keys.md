@@ -19,7 +19,6 @@
 | `voice_over[]` | `{file, out_start, src_start, src_end, rel_db 3}` narration recorded afterwards, leveled to the cut and mixed before the voice chain |
 | `modules` | `{header, hook, character, zoom, cards}` |
 | `zoom_mode` / `zoom` | `host_cut` · `{host_cut 1.08, min_zoom 1.5, min_gap 8}` |
-| `mosaic` | `{track, block, blend, soften, feather, pad}` — off by default; shimmered on movement in ep11 (see format-landscape-twoshot.md) |
 | `style` | overrides merged into the layout (`header.line1/line2`, `hook.cx`, caption rows …); dark footage: `header.color [255,255,255]` + `header.outline {width 6, color [10,10,10]}`, `hook.fill` white + `hook.stroke_fill` black |
 | `names` | `{host, guest}` labels for the cut list |
 | `grade` | `{mode none\|his_look\|param, sharpen}` |

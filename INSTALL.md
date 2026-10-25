@@ -17,6 +17,7 @@ report what you did, and ask before overwriting anything.
    - Claude Code: copy (or, if the user wants live edits, symlink) `skills/reels-talk-edit` and `skills/reels-qa`
      into `~/.claude/skills/`. If a skill with the same name exists, show the diff and ask.
    - Codex: copy both folders into `~/.agents/skills/` (same SKILL.md format).
+   - Optional: `skills/finance-reels-guard` (finance/investing reel reviewer) — ask whether they make such reels.
    - Claude app / Cowork: zip each skill folder and tell the user to add it under Settings → Skills, or propose them
      as skills if that tool is available.
 6. **Adapt paths**: `SKILL.md` uses the author's layout (`~/capcut/me/<NN_topic>/소스/`, Cowork device bridge).
