@@ -56,6 +56,7 @@ bottleneck** and leaves the quality-sensitive look to CapCut:
 |---|---|
 | [`skills/reels-talk-edit/`](skills/reels-talk-edit/SKILL.md) | The main skill: a staged workflow (intake → cut → subs → enhance → QA → 4K) that one agent follows in order |
 | [`skills/reels-qa/`](skills/reels-qa/SKILL.md) | The QA skill, run by a fresh subagent that never sees the editing plan |
+| [`skills/finance-reels-guard/`](skills/finance-reels-guard/SKILL.md) | Optional: a reviewer for finance/investing reels — 정보형 vs 해석형 (5 elements, ≥ 2 must be clear), evidence·viewpoint·delivery instead of views, four instant-fail risks (buy/sell instructions, guaranteed returns, undisclosed ads, copyright/music), and a 7-day insight analysis. Includes what my own test review taught me |
 | `skills/reels-talk-edit/scripts/` | Deterministic tools Claude calls: STT + word alignment, diarization, face track, EDL builder, renderer, cut list, auto QA |
 | `skills/reels-talk-edit/references/` | Loaded on demand: one file per format (portrait off-camera / landscape two-shot), retouch-from-raw, plan keys, the style spec measured from my edit, retention research |
 | `skills/reels-talk-edit/eval/` | ep9 ground truth + evaluator (regression test) |

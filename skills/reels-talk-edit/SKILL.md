@@ -32,7 +32,8 @@ wait, but still look at stills yourself. Feedback comes as "37초 컷이 어색�
 
 Hard rules: never degrade the source (master = source resolution/fps/10-bit; overlays on top); the corrected input is
 not re-graded; 반말 captions, no emoji; nothing on screen that wasn't said (cards, numbers); the user's instruction
-beats any planning doc they share as reference.
+beats any planning doc they share as reference. **Finance/investing topic** (stocks, ETF, 실적, 금리, 연금, 투자 판단) →
+also use the `finance-reels-guard` skill at the plan, at gate 2 and before the 4K master; its 위험 items are blockers.
 
 ## Files
 Bundle (Mac `~/capcut/reels-talk-edit/`, or the repo `skills/reels-talk-edit/`): `scripts/` (run them, don't

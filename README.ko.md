@@ -54,6 +54,7 @@ CapCut으로 편집할 때 시간을 잡아먹는 건 딱 두 가지였어. **�
 |---|---|
 | [`skills/reels-talk-edit/`](skills/reels-talk-edit/SKILL.md) | 메인 스킬. 에이전트 하나가 순서대로 따라가는 단계형 워크플로우 (인테이크 → 컷 → 자막 → 연출 → 검수 → 4K) |
 | [`skills/reels-qa/`](skills/reels-qa/SKILL.md) | 검수 스킬. 편집 계획을 모르는 새 서브에이전트가 실행 |
+| [`skills/finance-reels-guard/`](skills/finance-reels-guard/SKILL.md) | 선택: 금융·투자 릴스 감시관 — 정보형/해석형 판정(5요소 중 2개 이상), 조회수 대신 근거·관점·전달력 점수, 바로 탈락 4가지(매수·매도 지시, 수익 보장, 광고 미고지, 저작권·음원), 업로드 7일 뒤 인사이트 분석. 직접 검수해보며 배운 점 포함 |
 | `skills/reels-talk-edit/scripts/` | Claude가 호출하는 결정적 도구: STT + 단어 정렬, 화자 분리, 얼굴 추적, EDL 빌더, 렌더러, 컷 리스트, 자동 검수 |
 | `skills/reels-talk-edit/references/` | 필요할 때만 읽는 문서: 구도별 파일(세로·게스트 화면 밖 / 가로 투샷), 원본 보정 재현, plan 키, 내 편집에서 측정한 스타일 스펙, 이탈 방지 리서치 |
 | `skills/reels-talk-edit/eval/` | 9번 정답 + 채점기 (회귀 테스트) |
