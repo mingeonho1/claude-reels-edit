@@ -6,7 +6,7 @@ English | [한국어](README.ko.md)
 
 **Claude skills that cut and caption a two-person talk Reel** — you shoot the footage and do the
 2-minute look pass in CapCut; Claude does the slow part (cutting, then Korean + English captions),
-shows you a preview at each step, has an independent QA agent check the result, and renders the 4K master.
+shows you a preview at each step, has an independent QA agent check the result, and renders the master (1080p by default).
 
 > This is the exact workflow I use for my Instagram channel [@geono_x](https://www.instagram.com/geono_x/)
 > (economy and AI explained as a conversation between me and my friend 정우), released as-is.
@@ -36,7 +36,7 @@ bottleneck** and leaves the quality-sensitive look to CapCut:
 | ② Korean captions → English captions translated from them | **Claude** → preview → your OK | the second-longest step; EN from the final KR stays in sync |
 | ③ Retention extras (zoom punch-in, guest character, header, cards) | Claude, optional | only rules backed by research and my feedback |
 | ④ QA | **an independent subagent** | re-listens to and re-watches the output; doesn't trust the plan |
-| ⑤ 4K master | your Mac | source resolution, overlays on top |
+| ⑤ Master (1080p) | your Mac | the 4K source downscaled once, overlays drawn at output size; 4K on request |
 
 ## Proof so far
 
@@ -46,6 +46,7 @@ bottleneck** and leaves the quality-sensitive look to CapCut:
 | **ep10 「GPT-6」** — same set-up and framing, different content | 283.5 s take → **97.3 s**, 34 segments, 58 KR+EN captions, cold-open hook | QA round 1: 1 blocker / 3 major / 11 minor → round 2: 0 blocker ([findings](examples/ep10/qa_round1_findings.json)) |
 | **ep11 「AI 빈부격차」** — a different framing: landscape two-shot, guest on camera (a middle-school special-ed teacher friend, not 정우) | 219.5 s take → **94.1 s**, 25 segments, 56 KR+EN captions; uploaded as a landscape edit turned 90° clockwise (the viewer tilts the phone); a face mosaic was tried and dropped (it shimmered on movement) | QA round 1: 0 blocker / 2 major / 12 minor → all majors fixed ([case 2](docs/JOURNEY.md#7-case-2--a-different-framing-ep11)) |
 | **ep12 「대체 안 되는 AX 인재」** — a conference recap: 5 audience-view clips, no conversation take, planning first (4 planner subagents + a judge) | hand-built EDL over 2 concatenated clips, speaker lines + reveal panels, ~49 s; 9 preview rounds of feedback → overlay pacing rule | [feedback log](examples/ep12/feedback.md) |
+| **ep13 「투자 기초 : ETF」** — portrait talk, freestyle take (no script), finance 정보형 | 299 s take → **117 s**, 41 segments, 68 KR+EN captions, 8 source/notice lines; 1080p master | 4 feedback rounds → flow check, 0.1 s cut gap, outgoing line finishes first ([feedback log](examples/ep13/feedback.md)) |
 | more framings | next: two cameras, standing / walking shots | planned |
 
 ---
@@ -54,14 +55,15 @@ bottleneck** and leaves the quality-sensitive look to CapCut:
 
 | Path | What it is |
 |---|---|
-| [`skills/reels-talk-edit/`](skills/reels-talk-edit/SKILL.md) | The main skill: a staged workflow (intake → cut → subs → enhance → QA → 4K) that one agent follows in order |
+| [`skills/reels-talk-edit/`](skills/reels-talk-edit/SKILL.md) | The main skill: a staged workflow (intake → cut → subs → enhance → QA → master → Instagram caption) that one agent follows in order |
 | [`skills/reels-qa/`](skills/reels-qa/SKILL.md) | The QA skill, run by a fresh subagent that never sees the editing plan |
 | [`skills/finance-reels-guard/`](skills/finance-reels-guard/SKILL.md) | Optional: a reviewer for finance/investing reels — 정보형 vs 해석형 (5 elements, ≥ 2 must be clear), evidence·viewpoint·delivery instead of views, four instant-fail risks (buy/sell instructions, guaranteed returns, undisclosed ads, copyright/music), and a 7-day insight analysis. Includes what my own test review taught me |
-| `skills/reels-talk-edit/scripts/` | Deterministic tools Claude calls: STT + word alignment, diarization, face track, EDL builder, renderer, cut list, auto QA |
+| `skills/reels-talk-edit/scripts/` | Deterministic tools Claude calls: STT + word alignment, diarization, face track, EDL builder, renderer, cut list, cut-tail check, auto QA |
 | `skills/reels-talk-edit/references/` | Loaded on demand: one file per format (portrait off-camera / landscape two-shot / conference recap montage), retouch-from-raw, plan keys, the style spec measured from my edit, retention research |
 | `skills/reels-talk-edit/eval/` | ep9 ground truth + evaluator (regression test) |
 | [`examples/ep10/`](examples/ep10), [`ep11/`](examples/ep11) | Real `plan.json` files (every editorial decision + KR/EN captions), cut lists and QA reports — reference data, not settings the skill applies |
 | [`examples/ep12/`](examples/ep12) | The conference recap: the hand-built EDL script and the preview-by-preview feedback log |
+| [`examples/ep13/`](examples/ep13) | A freestyle finance take: `plan.json` with notes/texts, the cut list and the feedback log behind the flow rules |
 | [`docs/JOURNEY.md`](docs/JOURNEY.md) | Why it is built this way and how it got here (tournament, feedback, redesign) |
 
 Division of labour: **Claude makes every editorial decision in `plan.json`** (what to drop, where lines end,
@@ -110,7 +112,7 @@ Checked against [Claude's skill authoring best practices](https://platform.claud
 | Claude Code: `context: fork` runs a skill in an isolated subagent | `reels-qa` declares `context: fork`, so it never sees the editing plan |
 
 So a new framing (ep11's landscape two-shot) is a new reference file, not a new skill: the workflow I care about —
-cut → approve → Korean → English from the Korean → approve → optional extras → independent QA → 4K — stays in one place.
+cut → approve → Korean → English from the Korean → approve → optional extras → independent QA → master — stays in one place.
 Both skills use the shared SKILL.md format, so they also run in Codex (`~/.agents/skills/`).
 
 ---
@@ -131,7 +133,8 @@ Claude then:
 3. **Captions → gate 2** — Korean in my house style, then English translated 1:1 from the final Korean.
 4. **Enhance** (optional) — hook title over the cold open, header, guest character, host-only punch-ins, cards.
 5. **QA** — a fresh subagent runs `qa_auto.py` + a human-style pass; blockers/majors get fixed and re-checked.
-6. **4K** — rendered in ≤ 150 s chunks on the Mac (resumable), loudness-verified.
+6. **Master** — 1080x1920 by default (4K on request), rendered in chunks on the Mac (resumable), loudness-verified.
+7. **Instagram caption** — 3 short options (question / number / mood hook), finance-checked, one recommended.
 
 Say "자동 승인" / "auto-approve" to skip the gates (Claude still looks at stills itself).
 
@@ -139,12 +142,15 @@ Key numbers it uses (all explained in the [journey](docs/JOURNEY.md)):
 
 | Rule | Value |
 |---|---|
-| Speed (pitch kept) | host 1.20 · guest 1.30 · mixed 1.25, cap 1.32 |
-| Speaker turn gap | 0.20 s of silence (> 0.5 s reads as dead air) |
+| Speed (pitch kept) | host 1.21 · guest (explainer) 1.18 · mixed 1.20, cap 1.32 (guest 1.15 if still fast) |
+| Silence at a cut | ≥ 0.10 s (same speaker) · 0.20 s at a speaker change (> 0.5 s reads as dead air) |
+| Drops | only where "line before ‖ line after" still reads as one conversation; flow beats length |
+| Speaker change | the outgoing line is heard to its last syllable (`check_tails.py`) |
 | Cut padding | 0.09 s in / 0.12 s out, 12 ms fades, only inside verified quiet |
 | Caption | one clause, ≤ 16 chars w/o spaces, ≥ 0.45 s, ≤ 13 chars/s, no emoji |
 | Punch-in | 1.08×, hard cut only, only where the host's line starts, ≤ 1 per 8 s |
 | Cards | ≤ 1 per 15–20 s, only numbers actually said on tape |
+| Source/notice lines (`notes`) | small 1–2 line box under the captions, ≥ 2 s, one at a time (finance sources and risk notices) |
 | Loudness | −10.5 LUFS (corrected input), true peak ≤ −1 dBTP |
 
 ## 🏗 How it works
@@ -161,10 +167,10 @@ CapCut-corrected .mov ──► device_proxy.py ──► src_720.mp4 + src.wav
                                                                                     ▼
                          render.py prepare / run / audio / finish  (chunked, resumable, x265 10-bit)
                                                                                     ▼
-                         qa_auto.py + reels-qa subagent ─► qa_findings.json ─► plan fixes ─► 4K master
+                         qa_auto.py + reels-qa subagent ─► qa_findings.json ─► plan fixes ─► 1080p master
 ```
 
-The skill was written for **Claude Cowork** (a cloud sandbox linked to my Mac: STT runs in the cloud, the 4K render
+The skill was written for **Claude Cowork** (a cloud sandbox linked to my Mac: STT runs in the cloud, the master render
 runs next to the source files on the Mac). Paths in `SKILL.md` follow my folder layout
 (`~/capcut/me/<NN_topic>/소스/`); with Claude Code on one machine, everything runs locally — just tell Claude
 where your files are.

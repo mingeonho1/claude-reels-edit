@@ -132,7 +132,8 @@ def cmd_prepare(a):
     st = OV.merged_style(E.get('style'), base=OV.LANDSCAPE_STYLE if land else None)
     rot = E.get('rotate') if a.mode == 'final' or a.rotate else None
     man = dict(W=W, H=H, s=s, mode=a.mode, fps=FPS, edl=os.path.abspath(a.edl), input=a.input,
-               orientation='landscape' if land else 'portrait', rotate=rot)
+               orientation='landscape' if land else 'portrait', rotate=rot,
+               downscale=(a.mode == 'final' and H != (2160 if land else 3840)))
     # colour LUT
     # grade modes: 'none' (input already corrected in CapCut -> untouched), 'his_look' (fitted to his CapCut
     # export: assets/his_look.cube, raw iPhone HLG input), 'param' (make_lut parametric look)
@@ -164,6 +165,18 @@ def cmd_prepare(a):
             ei.update(t0=c['out_start'], t1=c['out_end'])
             caps.append(ei)
     man['captions'] = caps
+    notes = []
+    for i, n in enumerate(E.get('notes', []) if L.get('notes', True) else []):
+        info = OV.note_png(n['lines'], st, s, os.path.join(AD, f'note{i:02d}.png'))
+        info.update(t0=n['out_start'], t1=n['out_end'])
+        notes.append(info)
+    man['notes'] = notes
+    texts = []
+    for i, x in enumerate(E.get('texts', []) if L.get('texts', True) else []):
+        info = OV.text_png(x, st, s, os.path.join(AD, f'text{i:02d}.png'))
+        info.update(t0=x['out_start'], t1=x['out_end'])
+        texts.append(info)
+    man['texts'] = texts
     if L.get('header', True):
         man['header'] = OV.header_png(st, s, W, os.path.join(AD, 'header.png'))
         man['header'].update(t0=E['header']['out_start'], t1=E['header']['out_end'])
@@ -270,7 +283,9 @@ def piece_graph(man, p, threads):
     else:
         inputs.append(['-ss', f"{p['src']:.4f}", '-t', f'{dur_src:.4f}', '-i', '{SRC}'])
         # 1. speed -> exact 30 fps timeline
-        fl.append(f"[0:v]setpts=(PTS-STARTPTS)/{sp},fps={FPS},scale={W}:{H}:flags=lanczos" if mode != 'final' else
+        # final mode keeps the source size; a final below source size (ep13: 1080x1920 upload master) downscales
+        # once here with lanczos, before every overlay, so captions/cards are drawn at the output resolution
+        fl.append(f"[0:v]setpts=(PTS-STARTPTS)/{sp},fps={FPS},scale={W}:{H}:flags=lanczos" if (mode != 'final' or man.get('downscale')) else
                   f"[0:v]setpts=(PTS-STARTPTS)/{sp},fps={FPS}")
     # 2. colour: HLG/BT.2020 (or SDR) -> BT.709 + calibrated look, via 3D LUT in RGB
     inm = 'bt2020' if man.get('input', 'hlg') == 'hlg' else 'bt709'
@@ -358,6 +373,11 @@ def piece_graph(man, p, threads):
             ci = len(inputs)
             inputs.append(['-i', c['png']])
             add_overlay(f'{ci}:v', c['x'], c['y'], en(c['t0'], c['t1']))
+    for c in man.get('notes', []) + man.get('texts', []):
+        if live(c['t0'], c['t1']):
+            ci = len(inputs)
+            inputs.append(['-i', c['png']])
+            add_overlay(f'{ci}:v', c['x'], c['y'], en(c['t0'], c['t1']))
     # hook (fly-up clip, last frame holds) + intro block, then persistent header
     hk = man.get('hook')
     if hk and live(hk['t0'], hk['t1']):
@@ -414,7 +434,7 @@ def stage_a(man, p, src, threads, nframes):
     W, H, mode = man['W'], man['H'], man['mode']
     PF = 'yuv420p10le' if mode == 'final' else 'yuv420p'
     sp = p['speed']
-    vf = f"setpts=(PTS-STARTPTS)/{sp},fps={FPS}" + (f",scale={W}:{H}:flags=lanczos" if mode != 'final' else '')
+    vf = f"setpts=(PTS-STARTPTS)/{sp},fps={FPS}" + (f",scale={W}:{H}:flags=lanczos" if (mode != 'final' or man.get('downscale')) else '')
     return [FFMPEG, '-v', 'error', '-threads', str(threads), '-ss', f"{p['src']:.4f}", '-t', f'{nframes / FPS * sp + 0.6:.4f}',
             '-i', src, '-vf', vf, '-frames:v', str(nframes + 6), '-pix_fmt', PF, '-f', 'rawvideo', 'pipe:1']
 

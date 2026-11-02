@@ -39,10 +39,15 @@ clicks at cuts, dead air, loudness, black/frozen frames, KR↔EN numbers, card/f
    mid-shot, zoom on a guest line (zoom is for the host only), mouth moving with no audio (pre-roll), flash/white or
    black frames, caption box overlapping a face/character/card, character shown while the host speaks for > 1 s,
    text cut off at the frame edge, tofu glyphs (□), English overlapping the other speaker's box, English unreadable
-   on a light background, a face mosaic that slips off the face.
+   on a light background, a face mosaic that slips off the face, header/notes unreadable on dark hair or blinds.
 4. **Rhythm**: from the cut list (segments) and re-transcription, find turn gaps < 0.12 s (rushed) or > 0.6 s
    (dead), a sentence cut before it ends, a cut that clips the next word, a question whose answer was cut, the same
    line twice (a cold-open teaser repeated later is intended — say so only if the repeat feels like an error).
+   **At every speaker change the outgoing line must be heard to its end** (repeated feedback; ep13 lost a rising
+   "있지?" to a cut 0.15 s early): run `python3 $SCRIPTS/check_tails.py --edl $EDL --rms <src>_rms10ms.npy --face
+   <face.npz>` when those files are given, and re-listen to each turn end with a narrow window on the OUTPUT; a
+   clipped outgoing tail is **major**. Also flag a line that refers to something no longer in the edit
+   ("이런 뉴스가 터져" followed by no news) and an ending that stops on a bare answer.
 5. **Audio**: each `click`/`dead_air` flag — open the samples around it (`ffmpeg -ss T-0.3 -t 0.6 … -f wav`) and look
    at the waveform/RMS; listen for 20–30 ms residual syllables right after cuts; loudness within ±1 LU of target,
    true peak ≤ −1 dBTP.
@@ -50,7 +55,10 @@ clicks at cuts, dead air, loudness, black/frozen frames, KR↔EN numbers, card/f
 Known false positives of the automatic pass: whisper looping on a chunk ("Q. Q. Q.") → that window falls back to
 zipformer tokens, which mangle English names (GPT-6 아스트라) — re-listen before calling it a mismatch;
 `uncaptioned` fillers that were removed on purpose; `caption_late` < 0.45 s is minor (STT timing ±0.15 s);
-`click` minor flags are usually breaths; frame jumps during fast hand gestures.
+`click` minor flags are usually breaths; frame jumps during fast hand gestures; `caption_mismatch` blockers around
+speaker changes where the STT window clipped the word (ep13: 5 of 5 were this — re-check each with a 1–2 s
+`retranscribe.py` window before keeping it); muted pre-roll frames at cuts (every cut keeps ≥ 0.10 s silence on
+purpose, 0.20 s at speaker changes); "※" 소자막 notes and small "( … )" asides are intended overlays, not speech.
 
 ## 3. Output — `OUT/qa_findings.json` and a ≤ 25-line summary as your final message
 ```json
@@ -61,5 +69,6 @@ zipformer tokens, which mangle English names (GPT-6 아스트라) — re-listen 
 ```
 Severity: **blocker** = wrong information on screen (wrong number/name/meaning, wrong speaker on a whole line,
 caption on silence, visible glitch frame, an unmasked face that should be masked); **major** = noticeably awkward
-(late caption > 0.45 s, mistranslation of tone, jumpy cut/zoom, click, dead air, clipped word); **minor** = polish.
+(late caption > 0.45 s, mistranslation of tone, jumpy cut/zoom, click, dead air, clipped word, clipped outgoing
+tail at a speaker change); **minor** = polish.
 `verdict = pass` only with 0 blocker and 0 major. Be specific and terse; cite times in OUTPUT seconds.

@@ -16,8 +16,9 @@ when the official guide is out, ask him for it and let it override this file.
    - 목표 유형? 해석형 / 정보형 / 미정 — 감시관이 판정
    - 월간 챌린지 주제로 만드나? (주제 목록은 아래) / 자유 주제
 2. **Checkpoints** — run the review at each, report before moving on:
-   - A. plan/script (before shooting or cutting) · B. Korean captions final (reels-talk-edit gate 2) ·
-     C. final preview before the 4K master. Re-run after every fix that touches wording, numbers, music, or captions.
+   - A. plan/script (before shooting or cutting; for a freestyle take with no script, on the cut transcript at gate 1) ·
+     B. Korean captions final (reels-talk-edit gate 2) · C. final preview before the master, including the Instagram
+     caption. Re-run after every fix that touches wording, numbers, music, or captions.
 3. **After upload + 7 days**: when he pastes data, run the insight analysis (below).
 In a scheduled/unattended run: don't ask; assume 해석형 and say so at the top.
 
@@ -27,6 +28,9 @@ Spawn a fresh `general-purpose` subagent that does NOT get your plan or your opi
 transcript of the preview / on-screen text and cards / caption + hashtags / music source), the channel facts (his
 relationships: NEXT 증권 앰배서더), and his answers from step 1. Ask for the report format below. If a video
 is given, the reviewer must also check on-screen text (cards, headers) and the audio track, not only captions.
+Tell the reviewer how fixes can be made in an edit of real footage: cutting a span, a 소자막 (small source/notice
+line), the Instagram caption, or rewording a caption without changing what was said — a line is not cut when that
+breaks the conversation's flow, so it should propose 소자막/caption fixes first.
 Then show him the report; fix 위험 items before anything else.
 
 ## Criteria (from the teaser)
@@ -72,6 +76,27 @@ Also flag as **주의** (not auto-탈락, but fix): 숫자에 출처·기준일 
 - "결론은 안 냅니다 / 댓글로"로 끝내면 앞에서 말한 내 결론을 스스로 지운다 → 끝을 "내 기준은 ○○"로 닫기.
 - 강세 근거를 친구 입으로 넣는 건 균형이지만, 그 근거로 **내가 틀릴 조건**을 말하지 않으면 리스크 요소는 '약함'.
 - 수치 기준일이 오래되면(두 달 전) 이달 주제 제출용으로는 다시 맞춰야 한다.
+- 정보형에서 2인칭 명령("○○로 투자해")을 피하려고 1인칭("난 이렇게 나눠 / 3년 뒤엔 이렇게 할 생각")으로 바꾸면 그게
+  '내 결론·기준'이 되어 **해석형으로 판정**된다. 정보형이면 결론·기준·계획을 제도 사실("~라는 규칙이 있어")로.
+  근거·리스크 고지는 사실이라 그것만으로는 해석형을 만들지 않는다.
+- '비법·순서·정답·필수' 같은 단어는 판단을 단정한다 → 정보형 헤더·캡션에서 빼고 '규칙·차이'로.
+- 프리스타일(흐름만 정한) 촬영은 A에서 **금지어 목록**을 검수하고, 실제 발화는 B(자막 확정)에서 다시 검수한다.
+  잘 튀어나오는 위험: "원금 보장"(예금형 상품에도), "○○ 사면 세금 안 내", "버티면 돼", 존댓말 명령.
+- 개그 콜백도 사실 검수 대상 (농담이 "그 상품에 넣을 수 있다"는 오해를 만들 수 있다).
+- 세법 개편안은 발표와 정부안 확정 사이에 바뀐다 → 소자막 쓰기 전 최신 단계 확인.
+- 2026-11 ETF 기초(정보형, 프리스타일 촬영 컷편집)에서 배운 것:
+  - 위험 대사가 대화 흐름의 일부면 **자르지 말고 소자막·캡션으로 막는다**. "방어율이 좋다는 거네" 같은 마무리는
+    남기고 "큰 하락 후 회복까지 수년 걸리기도 함 · 투자 권유 아님 · 원금 손실 가능" 소자막으로 위험 없음 판정.
+    "안전한 거야", 권유형 마무리("○○를 먼저 시작하는 게 좋은 선택")처럼 빼도 흐름이 이어지는 것만 자른다.
+  - 과거 수익률 바로 뒤에 감탄("엄청 높네")이 붙으면 미래 약속처럼 읽힌다 → 같은 순간 "과거 수익률이 미래 수익을
+    보장하지 않음" 소자막.
+  - 정보형 정확도 감점 1순위: 지수와 ETF 혼동(S&P500·나스닥100 = 지수, 그 지수를 따라가는 상품 = ETF),
+    "S&P500 = 미국 상위 500개"(위원회가 고른 대형주 약 500개). 대사는 두고 정의 소자막으로 고친다.
+  - 장기 평균 수익률은 기하(복리)/산술과 명목/실질을 밝힌다 (S&P500 장기: 명목 복리 약 10%, 산술은 약 2%p 높고
+    실질은 약 3%p 낮다). 말한 기간과 소자막 기간이 다르면 동시에 띄우지 않는다(말한 자막이 끝난 뒤에).
+  - "항상 짧은 기간에 회복"은 과장 → 회복 사례는 낙폭 + 회복 기간 숫자 + 기준(종가·고점)으로.
+  - 운용사 상품명 나열은 권유처럼 보인다 → 컷에서 빼고 캡션에 "○○은 예시 · 특정 상품 매수 권유 아님".
+  - 인스타 본문도 같은 기준: "투자에 참고하세요"류 권유 금지, 숫자는 영상과 같은 출처, 하락 위험을 적은 안을 추천.
 
 ## Report (the reviewer's output, Korean, condensed)
 ```
