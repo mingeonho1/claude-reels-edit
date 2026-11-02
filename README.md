@@ -142,7 +142,7 @@ Key numbers it uses (all explained in the [journey](docs/JOURNEY.md)):
 
 | Rule | Value |
 |---|---|
-| Speed (pitch kept) | host 1.18 · guest 1.25 · mixed 1.21, cap 1.32 |
+| Speed (pitch kept) | host 1.21 · guest (explainer) 1.18 · mixed 1.20, cap 1.32 (guest 1.15 if still fast) |
 | Silence at a cut | ≥ 0.10 s (same speaker) · 0.20 s at a speaker change (> 0.5 s reads as dead air) |
 | Drops | only where "line before ‖ line after" still reads as one conversation; flow beats length |
 | Speaker change | the outgoing line is heard to its last syllable (`check_tails.py`) |
