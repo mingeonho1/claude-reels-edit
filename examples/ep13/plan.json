@@ -1,0 +1,1018 @@
+{
+ "stage": "final",
+ "names": {
+  "host": "건호",
+  "guest": "정우"
+ },
+ "orientation": "portrait",
+ "start_word": 1.05,
+ "end_word": 295.15,
+ "speed": {
+  "host": 1.18,
+  "guest": 1.25,
+  "mixed": 1.21
+ },
+ "target_out": 125,
+ "grade": {
+  "mode": "none"
+ },
+ "retouch": {
+  "off": true
+ },
+ "audio": {
+  "mode": "passthrough"
+ },
+ "drop": [
+  {
+   "t": [
+    0.8,
+    1.04
+   ],
+   "why": "아"
+  },
+  {
+   "t": [
+    8.5,
+    8.76
+   ],
+   "why": "아"
+  },
+  {
+   "t": [
+    12.7,
+    19.75
+   ],
+   "why": "아~ ETF라는 종목을 쉽게? 음~"
+  },
+  {
+   "t": [
+    24.74,
+    33.98
+   ],
+   "why": "과일바구니 반복 + 개별주식/ETF 차이 예고 + 그래서"
+  },
+  {
+   "t": [
+    39.5,
+    43.6
+   ],
+   "why": "개별주식은 사과 하나 (반복)"
+  },
+  {
+   "t": [
+    48.85,
+    50.62
+   ],
+   "why": "그치 근데"
+  },
+  {
+   "t": [
+    58.7,
+    61.9
+   ],
+   "why": "응 / 그러면 어떻게 되겠어? (재시작)"
+  },
+  {
+   "t": [
+    69.3,
+    71.46
+   ],
+   "why": "그치 그래서"
+  },
+  {
+   "t": [
+    79.7,
+    81.6
+   ],
+   "why": "그치 / 근데 막"
+  },
+  {
+   "t": [
+    88.82,
+    91.7
+   ],
+   "why": "과일 나열 축약 (용과~키위)"
+  },
+  {
+   "t": [
+    95.9,
+    97.3
+   ],
+   "why": "그래서"
+  },
+  {
+   "t": [
+    123.42,
+    126.86
+   ],
+   "why": "ETF는 우리가 흔히 아는 제일... (재시작)"
+  },
+  {
+   "t": [
+    146.76,
+    156.8
+   ],
+   "why": "개별 상품명(타이거·코덱스) 나열"
+  },
+  {
+   "t": [
+    166.65,
+    169.05
+   ],
+   "why": "아까 말했듯이"
+  },
+  {
+   "t": [
+    170.3,
+    183.75
+   ],
+   "why": "분산투자 지겹도록 + 500개 기업 예고"
+  },
+  {
+   "t": [
+    194.28,
+    217.25
+   ],
+   "why": "맞지 / 투명성(길이) / 좋네 / 진짜 진짜 괜찮지(의견) / 첫 S&P500이"
+  },
+  {
+   "t": [
+    218.12,
+    226.38
+   ],
+   "why": "1927년 + 정식 이름 아니었지만 + 그때부터 (재시작)"
+  },
+  {
+   "t": [
+    261.36,
+    264.72
+   ],
+   "why": "항상 비교적 짧은 기간 (사실 과장 소지)"
+  },
+  {
+   "t": [
+    127.95,
+    128.39
+   ],
+   "why": "bogus"
+  },
+  {
+   "t": [
+    267.06,
+    267.55
+   ],
+   "why": "움직임도 중복(옛 단어)"
+  },
+  {
+   "t": [
+    231.4,
+    232.38
+   ],
+   "why": "음"
+  },
+  {
+   "t": [
+    107.32,
+    110.5
+   ],
+   "why": "정우가 '아니지 다른 것도 있지' 따라 말함 + '그래서 안전한 거야'"
+  },
+  {
+   "t": [
+    131.0,
+    143.02
+   ],
+   "why": "그렇지(불명확) + 미국/국내 지수 재나열(코덱스200 상품명) — '그 다음에'로 자연스럽게 이어짐"
+  },
+  {
+   "t": [
+    158.3,
+    159.7
+   ],
+   "why": "있지(반복)"
+  },
+  {
+   "t": [
+    160.55,
+    162.35
+   ],
+   "why": "이…(머뭇)"
+  },
+  {
+   "t": [
+    187.45,
+    188.6
+   ],
+   "why": "그치"
+  },
+  {
+   "t": [
+    234.4,
+    242.4
+   ],
+   "why": "10% 반복 + 'S&P500은 항상'(말 끊김)"
+  },
+  {
+   "t": [
+    249.1,
+    250.65
+   ],
+   "why": "어 뭐"
+  },
+  {
+   "t": [
+    270.3,
+    294.2
+   ],
+   "why": "마무리 권유 멘트(삼성·하이닉스… S&P500 먼저 시작이 좋은 선택) — 감시관 매수 권유 소지"
+  }
+ ],
+ "captions": [
+  {
+   "t": [
+    1.05,
+    4.04
+   ],
+   "speaker": "host",
+   "text": "투자를 처음 시작하는 사람이 있는데",
+   "en": "Say someone's just starting to invest."
+  },
+  {
+   "t": [
+    5.84,
+    7.67
+   ],
+   "speaker": "host",
+   "text": "ETF가 입문하기 쉽잖아",
+   "en": "ETFs are easy to start with, right?"
+  },
+  {
+   "t": [
+    8.79,
+    9.89
+   ],
+   "speaker": "guest",
+   "text": "그치, 제일 쉽지",
+   "en": "Right, the easiest."
+  },
+  {
+   "t": [
+    9.91,
+    12.61
+   ],
+   "speaker": "host",
+   "text": "ETF 쉽게 설명해 줄 수 있어?",
+   "en": "Can you explain ETFs simply?"
+  },
+  {
+   "t": [
+    19.82,
+    20.83
+   ],
+   "speaker": "guest",
+   "text": "비유를 하나 들어볼까?",
+   "en": "Let me use an analogy."
+  },
+  {
+   "t": [
+    20.84,
+    24.74
+   ],
+   "speaker": "guest",
+   "text": "ETF는 과일바구니라고 생각하면 돼",
+   "en": "Think of an ETF as a fruit basket."
+  },
+  {
+   "t": [
+    33.99,
+    35.8
+   ],
+   "speaker": "guest",
+   "text": "개별 주식을 사는 건",
+   "en": "Buying an individual stock"
+  },
+  {
+   "t": [
+    36.01,
+    39.45
+   ],
+   "speaker": "guest",
+   "text": "사과 한 알 사는 거랑 똑같아",
+   "en": "is just like buying one apple."
+  },
+  {
+   "t": [
+    43.63,
+    45.41
+   ],
+   "speaker": "guest",
+   "text": "내가 만약 이 사과를 샀어",
+   "en": "Say I bought this apple."
+  },
+  {
+   "t": [
+    46.15,
+    48.79
+   ],
+   "speaker": "guest",
+   "text": "내 과일바구니엔 사과들만 있겠지?",
+   "en": "Then my basket only has apples, right?"
+  },
+  {
+   "t": [
+    50.63,
+    54.36
+   ],
+   "speaker": "guest",
+   "text": "만약 뉴스에 이런 기사가 떠",
+   "en": "Then this news comes out:"
+  },
+  {
+   "t": [
+    54.37,
+    56.33
+   ],
+   "speaker": "guest",
+   "text": "올해 수확한 사과들이",
+   "en": "this year's apples"
+  },
+  {
+   "t": [
+    56.43,
+    58.69
+   ],
+   "speaker": "guest",
+   "text": "알고 보니 농약에 엄청 젖어 있대",
+   "en": "turned out to be soaked in pesticide."
+  },
+  {
+   "t": [
+    61.93,
+    64.27
+   ],
+   "speaker": "guest",
+   "text": "바구니 속 사과 가치는 어떻게 되겠어?",
+   "en": "What happens to the apples' value?"
+  },
+  {
+   "t": [
+    64.95,
+    66.01
+   ],
+   "speaker": "host",
+   "text": "썩지? 안 좋지?",
+   "en": "They rot? Not good?"
+  },
+  {
+   "t": [
+    66.16,
+    66.79
+   ],
+   "speaker": "guest",
+   "text": "어, 썩지",
+   "en": "Yep, they rot."
+  },
+  {
+   "t": [
+    67.11,
+    69.19
+   ],
+   "speaker": "guest",
+   "text": "내가 산 사과가 다 썩는 거잖아",
+   "en": "Every apple I bought goes bad."
+  },
+  {
+   "t": [
+    71.47,
+    73.7
+   ],
+   "speaker": "guest",
+   "text": "개별 주식 하나만 사는 건",
+   "en": "Buying just one stock"
+  },
+  {
+   "t": [
+    73.71,
+    74.81
+   ],
+   "speaker": "guest",
+   "text": "굉장히 위험해",
+   "en": "is really risky,"
+  },
+  {
+   "t": [
+    74.83,
+    77.7
+   ],
+   "speaker": "guest",
+   "text": "왜냐면 악재 하나에도",
+   "en": "because one piece of bad news"
+  },
+  {
+   "t": [
+    77.7,
+    79.67
+   ],
+   "speaker": "guest",
+   "text": "내 주식이 한꺼번에 다 망하잖아",
+   "en": "can sink all of it at once."
+  },
+  {
+   "t": [
+    81.67,
+    83.02
+   ],
+   "speaker": "guest",
+   "text": "근데 ETF는",
+   "en": "But an ETF"
+  },
+  {
+   "t": [
+    83.23,
+    85.85
+   ],
+   "speaker": "guest",
+   "text": "여러 과일이 담긴 바구니 같은 거야",
+   "en": "is a basket of many kinds of fruit."
+  },
+  {
+   "t": [
+    86.19,
+    88.78
+   ],
+   "speaker": "guest",
+   "text": "복숭아도, 사과도, 자두도 있고",
+   "en": "Peaches, apples, plums,"
+  },
+  {
+   "t": [
+    91.75,
+    94.21
+   ],
+   "speaker": "guest",
+   "text": "엄청 다양한 과일을 한데 모은",
+   "en": "all sorts of fruit put together,"
+  },
+  {
+   "t": [
+    94.22,
+    95.84
+   ],
+   "speaker": "guest",
+   "text": "바구니 하나를 사는 거지",
+   "en": "and you buy the whole basket."
+  },
+  {
+   "t": [
+    97.33,
+    98.7
+   ],
+   "speaker": "guest",
+   "text": "만약 이런 뉴스가 하나 터져",
+   "en": "Now say that news breaks."
+  },
+  {
+   "t": [
+    98.8,
+    101.75
+   ],
+   "speaker": "guest",
+   "text": "아까처럼 수확한 사과가",
+   "en": "Like before, the harvested apples"
+  },
+  {
+   "t": [
+    101.76,
+    103.51
+   ],
+   "speaker": "guest",
+   "text": "다 농약에 젖어서 망했대",
+   "en": "are all ruined by pesticide."
+  },
+  {
+   "t": [
+    103.75,
+    105.96
+   ],
+   "speaker": "guest",
+   "text": "근데 내 바구니에 사과만 있어?",
+   "en": "But is my basket only apples?"
+  },
+  {
+   "t": [
+    106.55,
+    107.29
+   ],
+   "speaker": "host",
+   "text": "아니, 다른 것도 있지",
+   "en": "No, there's other fruit too."
+  },
+  {
+   "t": [
+    110.58,
+    112.45
+   ],
+   "speaker": "guest",
+   "text": "내 사과가 상했더라도",
+   "en": "Even if my apples go bad,"
+  },
+  {
+   "t": [
+    112.47,
+    115.05
+   ],
+   "speaker": "guest",
+   "text": "바구니 속 다른 과일은 안전하니까",
+   "en": "the other fruit in the basket is fine."
+  },
+  {
+   "t": [
+    115.16,
+    115.76
+   ],
+   "speaker": "host",
+   "text": "그치 그치",
+   "en": "Right, right."
+  },
+  {
+   "t": [
+    116.52,
+    117.71
+   ],
+   "speaker": "guest",
+   "text": "그래서 ETF는 뭐냐?",
+   "en": "So what is an ETF?"
+  },
+  {
+   "t": [
+    118.75,
+    120.02
+   ],
+   "speaker": "guest",
+   "text": "여러 회사의 주식을",
+   "en": "Stocks of many companies,"
+  },
+  {
+   "t": [
+    120.03,
+    121.85
+   ],
+   "speaker": "guest",
+   "text": "한 종목으로 다 같이 사는 거야",
+   "en": "bought together as one."
+  },
+  {
+   "t": [
+    122.01,
+    123.4
+   ],
+   "speaker": "guest",
+   "text": "그럼 ETF엔 뭐가 있을까?",
+   "en": "So what ETFs are there?"
+  },
+  {
+   "t": [
+    126.88,
+    127.92
+   ],
+   "speaker": "guest",
+   "text": "너도 아는 거 있어?",
+   "en": "Any you know?"
+  },
+  {
+   "t": [
+    128.4,
+    130.2
+   ],
+   "speaker": "host",
+   "text": "S&P500, 나스닥100",
+   "en": "S&P 500, Nasdaq 100,"
+  },
+  {
+   "t": [
+    130.22,
+    131.0
+   ],
+   "speaker": "host",
+   "text": "QQQ",
+   "en": "QQQ."
+  },
+  {
+   "t": [
+    143.04,
+    145.55
+   ],
+   "speaker": "guest",
+   "text": "그 다음에 우리나라에 상장된",
+   "en": "Then there are ones listed in Korea,"
+  },
+  {
+   "t": [
+    145.6,
+    146.85
+   ],
+   "speaker": "guest",
+   "text": "미국 S&P500도 있지",
+   "en": "including ones tracking the US S&P 500."
+  },
+  {
+   "t": [
+    156.84,
+    158.27
+   ],
+   "speaker": "guest",
+   "text": "한국 증권사에서도 살 수 있지",
+   "en": "You can buy them at Korean brokers."
+  },
+  {
+   "t": [
+    159.8,
+    164.57
+   ],
+   "speaker": "guest",
+   "text": "그 다음에, S&P500 ETF가",
+   "en": "Next, why is an S&P 500 ETF"
+  },
+  {
+   "t": [
+    164.69,
+    166.62
+   ],
+   "speaker": "guest",
+   "text": "왜 첫 투자로 좋냐면",
+   "en": "good as a first investment?"
+  },
+  {
+   "t": [
+    169.09,
+    170.27
+   ],
+   "speaker": "guest",
+   "text": "알아서 분산을 해줘",
+   "en": "It diversifies for you."
+  },
+  {
+   "t": [
+    183.8,
+    185.82
+   ],
+   "speaker": "guest",
+   "text": "S&P500은 미국 상위 500개",
+   "en": "The S&P 500 holds the top 500"
+  },
+  {
+   "t": [
+    185.85,
+    187.38
+   ],
+   "speaker": "guest",
+   "text": "기업을 한꺼번에 담은 거거든",
+   "en": "US companies all at once."
+  },
+  {
+   "t": [
+    188.61,
+    190.94
+   ],
+   "speaker": "guest",
+   "text": "그래서 주식 몇 주 값으로",
+   "en": "So for the price of a few shares"
+  },
+  {
+   "t": [
+    190.95,
+    192.51
+   ],
+   "speaker": "guest",
+   "text": "수백 개 기업에 나눠 담을 수 있는",
+   "en": "you spread across hundreds of companies,"
+  },
+  {
+   "t": [
+    192.57,
+    194.28
+   ],
+   "speaker": "guest",
+   "text": "자연스러운 분산 투자가 가능한 거지",
+   "en": "a natural kind of diversification."
+  },
+  {
+   "t": [
+    217.31,
+    227.45
+   ],
+   "speaker": "guest",
+   "text": "S&P500이 1927년부터",
+   "en": "The S&P 500, from 1927"
+  },
+  {
+   "t": [
+    227.7,
+    229.4
+   ],
+   "speaker": "guest",
+   "text": "지금까지 100년 동안",
+   "en": "to now, over 100 years,"
+  },
+  {
+   "t": [
+    229.42,
+    231.36
+   ],
+   "speaker": "guest",
+   "text": "평균 수익률이 한 10% 정도야",
+   "en": "has averaged about 10%."
+  },
+  {
+   "t": [
+    232.4,
+    233.13
+   ],
+   "speaker": "host",
+   "text": "엄청 높네",
+   "en": "That's high."
+  },
+  {
+   "t": [
+    233.81,
+    234.5
+   ],
+   "speaker": "guest",
+   "text": "그치",
+   "en": "Right."
+  },
+  {
+   "t": [
+    242.44,
+    246.09
+   ],
+   "speaker": "guest",
+   "text": "우리가 금융 위기들 있었잖아",
+   "en": "We've had financial crises,"
+  },
+  {
+   "t": [
+    246.28,
+    246.99
+   ],
+   "speaker": "guest",
+   "text": "전 세계적으로",
+   "en": "all over the world."
+  },
+  {
+   "t": [
+    248.55,
+    251.45
+   ],
+   "speaker": "guest",
+   "text": "예를 들어 코로나라든지",
+   "en": "Like COVID,"
+  },
+  {
+   "t": [
+    251.95,
+    254.73
+   ],
+   "speaker": "guest",
+   "text": "2008년 세계 금융위기라든지",
+   "en": "or the 2008 global financial crisis."
+  },
+  {
+   "t": [
+    255.63,
+    259.12
+   ],
+   "speaker": "guest",
+   "text": "그런 위기에서도 S&P500은",
+   "en": "Even in those crises, the S&P 500"
+  },
+  {
+   "t": [
+    259.23,
+    261.33
+   ],
+   "speaker": "guest",
+   "text": "한시적으로 떨어질 때는 있었지만",
+   "en": "did drop for a while, but"
+  },
+  {
+   "t": [
+    264.74,
+    266.05
+   ],
+   "speaker": "guest",
+   "text": "전 고점을 다시 회복하는",
+   "en": "it showed it could climb back"
+  },
+  {
+   "t": [
+    266.07,
+    267.05
+   ],
+   "speaker": "guest",
+   "text": "움직임도 보였었어",
+   "en": "to its old high."
+  },
+  {
+   "t": [
+    267.8,
+    269.28
+   ],
+   "speaker": "host",
+   "text": "방어율이 좋다는 거네",
+   "en": "So it holds up well."
+  },
+  {
+   "t": [
+    269.45,
+    270.15
+   ],
+   "speaker": "guest",
+   "text": "그렇지",
+   "en": "Exactly."
+  },
+  {
+   "t": [
+    294.28,
+    294.63
+   ],
+   "speaker": "host",
+   "text": "좋다",
+   "en": "Nice."
+  }
+ ],
+ "modules": {
+  "header": true,
+  "hook": true,
+  "character": true,
+  "zoom": true,
+  "cards": false
+ },
+ "mute_extra": [
+  {
+   "src": 142.94,
+   "add": 0.12
+  }
+ ],
+ "retime": [
+  {
+   "i": 357,
+   "src": [
+    194.55,
+    194.75
+   ]
+  },
+  {
+   "i": 272,
+   "src": [
+    146.45,
+    146.82
+   ]
+  },
+  {
+   "i": 273,
+   "src": [
+    146.84,
+    146.95
+   ]
+  },
+  {
+   "i": 201,
+   "src": [
+    107.15,
+    107.47
+   ]
+  },
+  {
+   "i": 515,
+   "src": [
+    294.28,
+    295.15
+   ]
+  }
+ ],
+ "cut_gap": 0.1,
+ "zoom_mode": "host_cut",
+ "hook": {
+  "text": "투자 기초 : ETF",
+  "intro": false,
+  "keep_captions": true
+ },
+ "style": {
+  "header": {
+   "line2": "뷰티 힐링 토크쇼",
+   "l2_w": 870,
+   "outline": {
+    "width": 6,
+    "color": [
+     255,
+     255,
+     255
+    ]
+   }
+  },
+  "character": {
+   "cx": 1620
+  }
+ },
+ "notes": [
+  {
+   "t": [
+    111.73,
+    115.05
+   ],
+   "lines": [
+    "※ 시장 전체가 하락하면 ETF도 함께 하락"
+   ]
+  },
+  {
+   "t": [
+    128.4,
+    131.0
+   ],
+   "lines": [
+    "※ S&P500·나스닥100 = 지수 이름",
+    "QQQ = 나스닥100을 따라가는 ETF"
+   ]
+  },
+  {
+   "t": [
+    183.8,
+    187.38
+   ],
+   "lines": [
+    "※ S&P500 = 위원회가 고른 미국 대형주 약 500개"
+   ]
+  },
+  {
+   "t": [
+    227.7,
+    231.36
+   ],
+   "lines": [
+    "※ S&P500 연평균 약 10% (복리·배당 포함·명목)",
+    "1928~2025 · 출처: NYU Stern 다모다란 (2026.1)"
+   ]
+  },
+  {
+   "t": [
+    232.4,
+    234.5
+   ],
+   "lines": [
+    "※ 과거 수익률이 미래 수익을 보장하지 않음"
+   ]
+  },
+  {
+   "t": [
+    248.55,
+    252.3
+   ],
+   "lines": [
+    "※ 코로나(2020): 최대 −34%, 약 6개월 만에 전고점"
+   ]
+  },
+  {
+   "t": [
+    252.38,
+    261.33
+   ],
+   "lines": [
+    "※ 2008 금융위기(2007~09): 최대 −57%, 약 5년 5개월 만에 전고점"
+   ]
+  },
+  {
+   "t": [
+    267.8,
+    295.4
+   ],
+   "lines": [
+    "※ 큰 하락 후 회복까지 수년 걸리기도 함 (2008: 약 5년 5개월)",
+    "투자 권유 아님 · ETF도 원금 손실 가능"
+   ]
+  }
+ ],
+ "preview_timecode": false,
+ "texts": [
+  {
+   "t": [
+    110.6,
+    121.5
+   ],
+   "text": "( 편하게 듣는 힐링 토크쇼 )",
+   "cx": 1320,
+   "cy": 1000,
+   "size": 62
+  },
+  {
+   "t": [
+    122.2,
+    127.95
+   ],
+   "text": "( ㅎㅎ )",
+   "cx": 1320,
+   "cy": 1000,
+   "size": 62
+  }
+ ]
+}
