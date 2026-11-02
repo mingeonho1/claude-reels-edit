@@ -9,7 +9,7 @@
 | `cut[]` | `[[s0,s1]]` force a cut through a span that never measures as quiet |
 | `retime[]` | `{i, src:[s0,s1]}` corrected word times |
 | `mute_extra[]` | `{src: seg_start, add: 0.06}` mute a residual syllable after a tight in-point |
-| `speed` / `speed_cap` | `{host, guest, mixed}` 1.18 / 1.25 / 1.21 · cap 1.32 |
+| `speed` / `speed_cap` | `{host, guest, mixed}` 1.21 / 1.18 / 1.20 · cap 1.32 (explainer slowest; guest 1.15 if still fast) |
 | `turn_gap` / `cut_gap` / `pause_cut` / `pad_in` / `pad_out` | 0.20 (speaker change) / 0.10 (same speaker, output s) / 0.32 / 0.09 / 0.12 s |
 | `target_out` | output length limit (s); build_edl fails above ×1.05 |
 | `cold_open` | `{spans:[[s0,s1]], captions:[…], transition:'cut', whoosh:false}` |

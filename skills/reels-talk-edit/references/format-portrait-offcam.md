@@ -35,7 +35,7 @@ One static vertical iPhone on Geonho (**host**, asks; black caption row). 정우
 - Ending: never stop on a bare answer — keep a short closing reaction from the tape ("좋다", "고마워") + ~0.5 s tail.
 
 ## Speakers
-Bigger diarization cluster with less on-camera mouth motion = guest. Speed: host 1.18 / guest 1.25 / mixed 1.21.
+Bigger diarization cluster with less on-camera mouth motion = guest. Speed: host 1.21 / guest (explainer) 1.18 / mixed 1.20; guest 1.15 if still fast.
 
 ## QA brief for the subagent
 "Portrait. Host on camera (black row), guest off camera (navy row + character GIF). Zoom is host-only by design."
