@@ -12,7 +12,7 @@ Cut engine (word-boundary safe):
     (30 ms smoothed RMS) between the two words, never inside a word span; otherwise it is nudged to the
     lowest-energy 10 ms frame within +-0.05 s.  Pause left across a cut = PAD_OUT+PAD_IN = 0.24 s source.
   * islands whose gap after padding < 0.12 s are merged (no cut).
-  * speed per segment: host-dominant 1.20, guest-dominant (>=3 s) 1.30, else 1.25  (plan.speed overrides)
+  * speed per segment: host-dominant 1.21, guest-dominant (>=3 s) 1.18, else 1.20  (plan.speed overrides)
 Captions: times come only from word timestamps (or explicit plan 'src' overrides) mapped through the cut/speed
   map; lead 0.05 s, tail 0.15 s; same-speaker gaps < 1.2 s are closed (no flicker); min 0.6 s.
 Character (guest avatar) blocks: guest captions merged across gaps < 3.0 s (plan char_merge_gap) or across host 맞장구
@@ -57,7 +57,7 @@ FPS_OUT = 30
 
 PAUSE_CUT = P.get('pause_cut', 0.40)
 PAD_IN, PAD_OUT = P.get('pad_in', 0.10), P.get('pad_out', 0.14)
-SPD = dict(host=1.18, guest=1.25, mixed=1.21)   # ep13 2026-11-01: slower
+SPD = dict(host=1.21, guest=1.18, mixed=1.20)   # explainer (guest) slowest; still fast -> guest 1.15
 SPD.update(P.get('speed', {}))
 
 # smoothed envelope (30 ms)
