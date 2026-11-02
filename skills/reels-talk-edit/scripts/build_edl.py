@@ -57,7 +57,7 @@ FPS_OUT = 30
 
 PAUSE_CUT = P.get('pause_cut', 0.40)
 PAD_IN, PAD_OUT = P.get('pad_in', 0.10), P.get('pad_out', 0.14)
-SPD = dict(host=1.20, guest=1.30, mixed=1.25)
+SPD = dict(host=1.18, guest=1.25, mixed=1.21)   # ep13 2026-11-01: slower
 SPD.update(P.get('speed', {}))
 
 # smoothed envelope (30 ms)
@@ -247,15 +247,19 @@ if P.get('auto_speed', True):
 # speaker-turn breathing room (user 2026-10-22: "정우와 내 텀이 너무 짧아"): at every cut where the speaker changes,
 # guarantee >= turn_gap s of silence in the OUTPUT. Order: extend the out-point of A forward through verified quiet,
 # then the in-point of B backward through quiet, and only then pre-roll B's video with muted audio (mute_lead).
-TURN_GAP = P.get('turn_gap', 0.20)   # research: natural turn gap ~200 ms (Stivers 2009); >500 ms reads as hesitation
+TURN_GAP = P.get('turn_gap', 0.20)
+# same-speaker cuts (user 2026-11-01 ep13: "말 끝내고 0.1초 쉬고 진행해야지, 컷마다 틈이 없어서 어색해"): >= cut_gap s silence
+CUT_GAP = P.get('cut_gap', 0.10)   # research: natural turn gap ~200 ms (Stivers 2009); >500 ms reads as hesitation
 def _quiet_src(t):
     return e_at(t) < QTHR - 1.0   # floor+5 dB: breath/room noise between turns does not count as a pause
 for a_, b_ in zip(segs, segs[1:]):
     if abs(b_['src_start'] - a_['src_end']) < 0.02:
         continue                                    # contiguous in source (speed split): natural gap
     la, fb = W[a_['words'][-1]], W[b_['words'][0]]
-    if la['spk'] == fb['spk'] and not a_.get('cold'):
+    same_spk = la['spk'] == fb['spk'] and not a_.get('cold')
+    if same_spk and CUT_GAP <= 0:
         continue
+    GAP = CUT_GAP if same_spk else TURN_GAP
     # current silence: quiet after the last voiced frame of A + quiet before the first voiced frame of B
     qa = 0.0
     while qa < 1.0 and _quiet_src(a_['src_end'] - qa - HOP):
@@ -263,7 +267,7 @@ for a_, b_ in zip(segs, segs[1:]):
     qb = 0.0
     while qb < 1.0 and _quiet_src(b_['src_start'] + qb + HOP):
         qb += HOP
-    need = TURN_GAP - (qa / a_['speed'] + qb / b_['speed'])
+    need = GAP - (qa / a_['speed'] + qb / b_['speed'])
     if need <= 0:
         continue
     nxt_w = W[la['i'] + 1]['start'] if la['i'] + 1 < len(W) else a_['src_end'] + 1.0
@@ -283,10 +287,11 @@ for a_, b_ in zip(segs, segs[1:]):
     b_['src_start'] = round(b_['src_start'] - ext, 4)
     if need > 0:
         ml = round(need * b_['speed'], 3)
-        if b_['src_start'] - ml > _floor_b - 0.03 or a_.get('cold'):   # after the cold open the white flash hides the pre-roll
+        # a short muted pre-roll (<= 0.30 s src) may run over the dropped word's mouth: 3-4 frames, inaudible
+        if b_['src_start'] - ml > _floor_b - 0.03 or a_.get('cold') or ml <= 0.30:   # after the cold open the white flash hides the pre-roll
             b_['src_start'] = round(b_['src_start'] - ml, 4)
             b_['mute_lead'] = ml                      # source seconds of pre-roll whose audio is muted
-    print(f"turn gap @src {b_['src_start']:.2f}: had {qa / a_['speed'] + qb / b_['speed']:.2f}s out, mute_lead {b_.get('mute_lead', 0)}")
+    print(f"{'cut' if same_spk else 'turn'} gap @src {b_['src_start']:.2f}: had {qa / a_['speed'] + qb / b_['speed']:.2f}s out, mute_lead {b_.get('mute_lead', 0)}")
 
 # QA fixes: extra muted lead-in on a segment (residual syllable of a dropped word right after a tight in-point)
 for mx in P.get('mute_extra', []):
@@ -715,6 +720,20 @@ for x, y in zip(cards, cards[1:]):
     if y['out_start'] - x['out_end'] < 8.0:
         warn.append(f"cards '{x['title']}' and '{y['title']}' only {y['out_start'] - x['out_end']:.1f} s apart (want >= 8 s)")
 
+# ---- notes (소자막, ep13 2026-11-02): small source / disclaimer lines under the captions. Finance reels only use them
+# for sources, dates and risk notices the finance guard asks for; spoken content stays in the captions. ----
+notes = []
+for n_ in P.get('notes', []):
+    t0 = s2o(n_['t'][0], 'start'); t1 = s2o(n_['t'][1], 'end')
+    t1 = min(OUT_DUR, max(t1, t0 + n_.get('min_dur', 2.0)))
+    notes.append(dict(out_start=round(t0, 3), out_end=round(t1, 3), lines=n_['lines']))
+texts = []   # free text stickers {t:[s0,s1], text, cx, cy, size, ...} (4K canvas coords)
+for x_ in P.get('texts', []):
+    t0 = s2o(x_['t'][0], 'start'); t1 = s2o(x_['t'][1], 'end')
+    texts.append(dict({k: v for k, v in x_.items() if k != 't'}, out_start=round(t0, 3), out_end=round(t1, 3)))
+for x, y in zip(notes, notes[1:]):
+    if y['out_start'] < x['out_end']:
+        x['out_end'] = y['out_start']   # one note at a time
 style = json.load(open(a.style)) if a.style else {}
 for k_, v_ in P.get('style', {}).items():   # plan-level overrides (header text, layout) win over --style
     style[k_] = dict(style.get(k_, {}), **v_) if isinstance(v_, dict) else v_
@@ -734,7 +753,7 @@ edl = dict(source=a.src_name or WJ.get('source'), fps=FPS_OUT, out_frames=fr, ou
                      intro=H.get('intro', not CO)),
            transitions=([dict(t=hook_end, type=CO.get('transition', 'cut'), out_frames=4, in_frames=6, whoosh=CO.get('whoosh', False))] if CO else []),
            header=dict(out_start=hook_end, out_end=round(OUT_DUR, 4)),
-           zooms=zooms, cards=cards,
+           zooms=zooms, cards=cards, notes=notes, texts=texts,
            grade=P.get('grade', {}), retouch=P.get('retouch', {}),
            audio=dict(target_lufs=P.get('audio', {}).get('target_lufs', -11.0), true_peak=-1.5, fade_ms=12,
                       mode=P.get('audio', {}).get('mode', 'voice_chain')),

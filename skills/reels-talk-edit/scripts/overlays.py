@@ -16,13 +16,16 @@ DEFAULT_STYLE = {
                 "host": {"top": 2146, "color": [0, 0, 0]}, "guest": {"top": 2373, "color": [37, 41, 115]},
                 "max_w": 1900},
     "header": {"line1": "01년생 AI 3년차 개발자와 Sydney Uni 금융 경제", "line2": "고품격 힐링 토크쇼",
-               "l1_glyph_h": 77, "l1_top": 533, "l1_w": 1473, "l2_glyph_h": 117, "l2_top": 649, "l2_w": 979, "l2_bold": 3, "color": [0, 0, 0]},
+               "l1_glyph_h": 77, "l1_top": 533, "l1_w": 1473, "l2_glyph_h": 117, "l2_top": 649, "l2_w": 979, "l2_bold": 3, "color": [0, 0, 0],
+               "outline": {"width": 6, "color": [255, 255, 255]}},   # ep13 QA: black header vanished on dark hair/blinds
     "hook": {"glyph_h": 260, "cy": 708, "max_w": 1700, "stroke": 7, "fill": [0, 0, 0], "stroke_fill": [255, 255, 255],
              "fly_px": 170, "fly_s": 0.5,
              "intro1": "AI 3년차 개발자와 Sydney Uni 금융 경제", "intro2": "고품격 힐링 토크쇼",
              "intro1_glyph_h": 77, "intro1_cy": 2239, "intro1_w": 1490, "intro2_glyph_h": 117, "intro2_cy": 2438, "intro2_w": 1167},
     "english": {"size": 68, "min_size": 50, "color": [236, 236, 236], "shadow": [0, 2, 200, 4], "stroke": 3, "stroke_color": [45, 45, 45], "gap": -6, "max_w": 1900},
-    "character": {"gif": "character.gif", "width": 1041, "cx": 1828, "cy": 2375},
+    "character": {"gif": "character.gif", "width": 1041, "cx": 1620, "cy": 2375},   # ep13: more central (was 1828); captions draw on top
+    "note": {"size": 44, "line_h": 62, "pad_x": 30, "pad_y": 16, "radius": 24, "top": 2770, "cx": 1080,
+             "fill": [0, 0, 0, 185], "color": [235, 235, 235]},
     "card": {"radius": 40, "title_size": 104, "line_size": 92, "accent_size": 128, "title_color": [38, 42, 120],
              "accent_color": [214, 58, 58], "down_color": [36, 92, 196], "text_color": [30, 30, 30], "pad": 54, "w": 1060, "right_margin": 110,
              "top": 880, "enter_frames": 6, "exit_frames": 5},
@@ -660,3 +663,39 @@ def panel_assets(card, idx, st, s, W, H, outdir, fps=30):
     x = even(W / 2 - w_ / 2)
     yy = even(P['top'] * s - shadow / ss)
     return dict(mov=mov, x=x, y=yy, frames=n, side='center', w=w_, h=h_)
+
+
+def note_png(lines, st, s, path):
+    """소자막: 1-2 small lines (Pretendard) in a translucent dark box under the caption rows (ep13 2026-11-02)."""
+    N = st['note']
+    ss = 3 if s < 0.5 else 2
+    font = ImageFont.truetype(os.path.join(ASSETS, st.get('fallback', 'Pretendard-ExtraBold.otf')), int(round(N['size'] * s * ss)))
+    lh, px, py = N['line_h'] * s * ss, N['pad_x'] * s * ss, N['pad_y'] * s * ss
+    tmp = ImageDraw.Draw(Image.new('RGBA', (8, 8)))
+    ws = [tmp.textlength(t, font=font) for t in lines]
+    bw, bh = int(math.ceil(max(ws) + 2 * px)), int(math.ceil(lh * len(lines) + 2 * py))
+    im = Image.new('RGBA', (bw, bh), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    d.rounded_rectangle([0, 0, bw - 1, bh - 1], radius=N['radius'] * s * ss, fill=tuple(N['fill']))
+    for k, (t, w) in enumerate(zip(lines, ws)):
+        y = py + k * lh + lh / 2
+        d.text(((bw - w) / 2, y), t, font=font, fill=tuple(N['color']) + (255,), anchor='lm')
+    W, H = max(2, even(bw / ss)), max(2, even(bh / ss))
+    im = im.resize((W, H), Image.LANCZOS)
+    im.save(path)
+    return dict(png=path, x=even(N['cx'] * s - W / 2), y=even(N['top'] * s), w=W, h=H)
+
+
+def text_png(item, st, s, path):
+    """Free text sticker (ep13 2026-11-02: '편하게 듣는 힐링 토크쇼' / 'ㅎㅎ' on the host's hair): Do Hyeon,
+    white + dark outline + soft shadow, centred at (cx, cy) on the 4K canvas."""
+    size = item.get('size', 72) * s
+    im, base, top, bot = render_text_rgba(item['text'], size, st, item.get('fill', [255, 255, 255]),
+                                          stroke=max(1, round(item.get('stroke', 5) * s)),
+                                          stroke_fill=tuple(item.get('stroke_fill', [40, 30, 25])),
+                                          shadow=(0, 3 * s, 140, 5 * s))
+    W, H = even(im.size[0]), even(im.size[1])
+    im = im.resize((W, H), Image.LANCZOS)
+    im.save(path)
+    cy_img = (top + bot) / 2
+    return dict(png=path, x=even(item['cx'] * s - W / 2), y=even(item['cy'] * s - cy_img), w=W, h=H)
