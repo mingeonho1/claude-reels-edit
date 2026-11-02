@@ -229,3 +229,27 @@ The overlay pacing rule isn't specific to this episode: it's now a common rule i
 ### Disk rule (found while tidying up ep10–12)
 
 After ep10–12 my `claude/` folders held 5.6 GB of work files (~1.9 GB per episode): 4K render pieces, an audio-less intermediate (`video_only.mp4`), wavs, proxies and leftover render versions (v2/v3/v4…). The only things worth keeping were a few MB of plan/EDL. Now every work file is made in the Mac VM's scratch space (`$HOME/rte_work`, gone when the session ends), and my folders get only the final 4K, a small record in `claude/` (< 5 MB) and a transfer slot that is overwritten every episode (`~/capcut/_claude_stage`).
+
+
+## 9. Case 4 — flow beats length (ep13)
+
+A freestyle finance take (no script, the guest explains ETFs with a fruit-basket analogy, 299 s). The first cut hit the
+old target — 97 s — and read badly: drops left lines pointing at things that were no longer there ("say this news
+breaks" ‖ "but is my basket only apples?" with the news itself cut), an analogy without its payoff, and a reaction
+("that's high") answered by a new topic. Restoring those spans and their bridge words took it to 116 s, and the verdict
+was "훨씬 좋다" (much better). Every round is in [`examples/ep13/feedback.md`](../examples/ep13/feedback.md).
+
+| My feedback | Rule in the skill |
+|---|---|
+| "if removing it makes the flow awkward, don't remove it" | **flow check** before gate 1: read each drop as "line before ‖ line after"; restore the span or its bridge word; gate 1 lists every whole-content drop |
+| "pause 0.1 s after a line before the next one; the cuts have no gap" | `cut_gap` 0.10 s at every same-speaker cut (speaker changes stay 0.20 s) |
+| "finish the line before 정우 talks — I've said this before" | at a speaker change the outgoing line ends after its last syllable's decay; `check_tails.py` flags ends on voiced energy and tails that continue |
+| "slow it down a little" | speeds 1.18 / 1.25 / 1.21 |
+| "it just stops at the end" | keep a short closing reaction from the take + ~0.5 s |
+| "1080p looks good enough, 4K takes too long" | the master is 1080x1920 by default: the 4K source is downscaled once before the overlays, so captions are drawn at output size |
+
+Finance side: a line the finance guard flagged ("so its defence is good", right after a 10 % long-run return) was first
+cut, which broke the ending; it came back with a small source/notice line under the captions instead (`notes`:
+drawdown and recovery time, "past returns don't guarantee future returns", "not investment advice"). The same notes
+correct definitions the guest said loosely (an index vs the ETF that tracks it) without touching what was said.
+The Instagram caption is now part of the run: 3 short options, checked by the same guard.
