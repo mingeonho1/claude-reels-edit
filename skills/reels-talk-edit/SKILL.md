@@ -102,7 +102,8 @@ into the same `r1080`, never `vN/` copies. Previews: one file name per stage (`p
   lands on the dip after the tail, even if it sits 0.03 s before the other voice; trim the incoming speaker's onset
   (`mute_extra`), never the outgoing tail. `check_tails.py` lists suspects (it caught the ep13 case: TAIL 70 ms,
   host mouth 1.02); `src_end` moves in output-frame steps (speed/30 s), so try 2–4 `retime` values and re-check.
-- Speed (pitch kept): asker 1.18 / explainer 1.25 / mixed 1.21 (ep13 "속도 조금만 줄이자"), cap 1.32. Set
+- Speed (pitch kept): asker (host) 1.21 / explainer (guest) 1.18 / mixed 1.20, cap 1.32 — the explainer carries
+  the content, so he is the slowest; if it still feels fast, lower the explainer to 1.15 first. Set
   `target_out` above the expected length: when over target, build_edl raises every speed up to 1.40 by itself.
 - Close: never end on a bare answer — keep a short closing reaction from the tape ("좋다", "고마워", ep13 "너무 그냥
   끝내는 느낌") with ~0.5 s tail (`retime` its end later).
